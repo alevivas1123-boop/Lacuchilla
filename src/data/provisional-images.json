@@ -1,0 +1,128 @@
+[
+  {
+    "slug": "queso-semiduro",
+    "archivo": "/products/queso-semiduro.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "bloqueante",
+    "motivo": "Se lee una marca comercial ajena en el envase. No puede aparecer en la tienda de La Cuchilla."
+  },
+  {
+    "slug": "queso-magro-con-sal",
+    "archivo": "/products/queso-magro-con-sal.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "bloqueante",
+    "motivo": "Es el mismo archivo que queso-magro-sin-sal (idéntico byte a byte) y además es una foto de góndola con envases de terceros. Cada variante necesita su propia foto."
+  },
+  {
+    "slug": "queso-magro-sin-sal",
+    "archivo": "/products/queso-magro-sin-sal.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "bloqueante",
+    "motivo": "Es el mismo archivo que queso-magro-con-sal (idéntico byte a byte) y además es una foto de góndola con envases de terceros. Cada variante necesita su propia foto."
+  },
+  {
+    "slug": "mermelada-durazno",
+    "archivo": "/products/mermelada-durazno.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "bloqueante",
+    "motivo": "Aparece una persona identificable en el encuadre. Publicar su imagen requiere su consentimiento, y además es una escena de feria, no una foto de producto."
+  },
+  {
+    "slug": "queso-colonia",
+    "archivo": "/products/queso-colonia.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "queso-dambo",
+    "archivo": "/products/queso-dambo.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "queso-mozzarella",
+    "archivo": "/products/queso-mozzarella.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "queso-parmesano",
+    "archivo": "/products/queso-parmesano.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "queso-provolone",
+    "archivo": "/products/queso-provolone.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "queso-rallado",
+    "archivo": "/products/queso-rallado.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "queso-untable",
+    "archivo": "/products/queso-untable.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "mermelada-frutilla",
+    "archivo": "/products/mermelada-frutilla.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "mermelada-higo",
+    "archivo": "/products/mermelada-higo.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "dulce-membrillo",
+    "archivo": "/products/dulce-membrillo.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "dulce-de-leche",
+    "archivo": "/products/dulce-de-leche.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "pizza-cuatro-quesos",
+    "archivo": "/products/pizza-cuatro-quesos.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "chorizo-chacarero",
+    "archivo": "/products/chorizo-chacarero.webp",
+    "origen": "Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial."
+  },
+  {
+    "slug": "hero",
+    "archivo": "/hero.webp",
+    "origen": "Composición armada con tres fotos de Wikimedia Commons",
+    "nivel": "licencia",
+    "motivo": "Licencia sin verificar. Buena parte del material de Wikimedia Commons es CC BY o CC BY-SA y exige atribuir al autor incluso en uso comercial. Se arma con queso-colonia, mermelada-frutilla y queso-untable, así que arrastra la licencia de las tres."
+  }
+]

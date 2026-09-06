@@ -28,6 +28,8 @@ export interface Product {
   weightOptions?: number[];
   /** Se completa en el servidor: true si existe la foto real en /public/products. */
   hasImage?: boolean;
+  /** Se completa en el servidor: true si la foto todavía es material provisorio. */
+  esProvisoria?: boolean;
 }
 
 export interface CartItem {

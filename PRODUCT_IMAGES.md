@@ -17,6 +17,10 @@ autor** aun en uso comercial. Una tienda que vende con esas fotos sin el
 crédito correspondiente queda expuesta. Lo sano es tratarlas como andamio:
 sirven para mostrar y validar la web, y salen antes de abrir al público.
 
+El inventario completo, con el estado de cada archivo y las barreras que
+impiden publicarlas por accidente, está en
+**[`IMAGE_REPLACEMENT_TODO.md`](./IMAGE_REPLACEMENT_TODO.md)**.
+
 ### Qué revisar de cada foto antes de publicar
 
 | Foto | Observación |

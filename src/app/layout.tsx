@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { AvisoImagenesProvisorias } from "@/components/dev/AvisoImagenesProvisorias";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { ToastProvider } from "@/components/ui/Toaster";
@@ -83,6 +84,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
           <Footer />
           <CartDrawer availableImages={availableImages} />
+          <AvisoImagenesProvisorias />
         </ToastProvider>
       </body>
     </html>

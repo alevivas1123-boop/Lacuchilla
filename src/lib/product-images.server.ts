@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { products } from "@/data/products";
+import { esImagenProvisoria } from "@/data/provisional-images";
 import type { Product } from "@/lib/types";
 
 /**
@@ -27,9 +28,13 @@ export function getAvailableProductImages(): string[] {
 
 /** Catálogo con la marca `hasImage` ya resuelta. */
 export function getProductsWithImages(): Product[] {
+  const enDesarrollo = process.env.NODE_ENV !== "production";
   return products.map((product) => ({
     ...product,
     hasImage: existeEnPublic(product.image),
+    // La marca de provisoria solo se calcula en desarrollo: en producción no
+    // se muestra nada, así que tampoco tiene por qué viajar al navegador.
+    ...(enDesarrollo ? { esProvisoria: esImagenProvisoria(product.slug) } : {}),
   }));
 }
 

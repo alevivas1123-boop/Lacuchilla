@@ -5,6 +5,17 @@ kilo, dulces, mermeladas, pizza y chorizo. Esta es la **fase 1**: una web
 completamente navegable y demostrable, pensada primero para el celular, con
 catálogo, carrito y checkout sin registro.
 
+> ### ⚠️ Antes de publicar: hay que reemplazar las fotos
+>
+> Las 18 imágenes del sitio son **material provisorio de Wikimedia Commons**,
+> cargado para construir y validar el MVP. Cuatro tienen además un problema de
+> contenido. **Ninguna puede quedar publicada como definitiva.**
+> El inventario completo, los motivos y el procedimiento están en
+> **[`IMAGE_REPLACEMENT_TODO.md`](./IMAGE_REPLACEMENT_TODO.md)**.
+>
+> El build de producción se corta solo mientras quede material provisorio, así
+> que esto no se publica por descuido.
+
 > **Qué hace y qué no hace todavía**
 >
 > El pedido se confirma en la web y se muestra un número de pedido, pero
@@ -52,11 +63,12 @@ Sin base de datos, sin backend, sin autenticación y sin pasarelas de pago.
 Requisitos: **Node.js 20 o superior** y npm.
 
 ```bash
-npm install       # instalar dependencias
-npm run dev       # desarrollo -> http://localhost:3000
-npm run lint      # ESLint
-npm run build     # build de producción
-npm start         # servir el build de producción
+npm install               # instalar dependencias
+npm run dev               # desarrollo -> http://localhost:3000
+npm run lint              # ESLint
+npm run build             # build de producción
+npm start                 # servir el build de producción
+npm run verificar:imagenes  # estado de las imágenes provisorias
 ```
 
 ## Estructura
@@ -163,6 +175,9 @@ Los 17 productos ya tienen su foto en `public/products/`, en WebP.
 > público hay que reemplazarlas por fotografías propias, o confirmar la
 > licencia y la atribución de cada archivo: buena parte del material de
 > Wikimedia exige atribuir al autor incluso en uso comercial.
+>
+> Requisito obligatorio, inventario y procedimiento:
+> **[`IMAGE_REPLACEMENT_TODO.md`](./IMAGE_REPLACEMENT_TODO.md)**.
 
 Ver **[`PRODUCT_IMAGES.md`](./PRODUCT_IMAGES.md)**: nombres exactos de archivo,
 qué revisar de cada foto antes de publicar, especificaciones y cómo optimizar.
@@ -176,7 +191,12 @@ mal recortada, se le pone `imageFit: "contain"` en `src/data/products.ts`.
 
 ## Desplegar en Vercel
 
-El proyecto no necesita variables de entorno ni servicios externos.
+El proyecto no necesita variables de entorno ni servicios externos **salvo
+una**, mientras las fotos sigan siendo provisorias: el build de producción se
+corta a propósito para que este material no se publique por descuido. Para una
+demo pública hay que definir `PERMITIR_IMAGENES_PROVISORIAS=1` en
+**Settings → Environment Variables**, y quitarla en cuanto se reemplacen las
+fotos. Ver [`IMAGE_REPLACEMENT_TODO.md`](./IMAGE_REPLACEMENT_TODO.md).
 
 1. Subí el repositorio a GitHub (ya está).
 2. En [vercel.com](https://vercel.com) → **Add New… → Project** → importá el

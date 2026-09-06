@@ -3,6 +3,7 @@
 import { ShoppingBasket } from "lucide-react";
 import { useState } from "react";
 
+import { DistintivoProvisoria } from "@/components/dev/DistintivoProvisoria";
 import { ProductImage } from "@/components/product/ProductImage";
 import { QuantityStepper } from "@/components/product/QuantityStepper";
 import { WeightSelector } from "@/components/product/WeightSelector";
@@ -39,14 +40,17 @@ export function ProductCard({ product, priority = false }: { product: Product; p
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-card border border-ink/10 bg-card shadow-soft transition-shadow duration-200 hover:shadow-lifted">
-      <ProductImage
-        src={product.hasImage ? product.image : undefined}
-        alt={product.alt}
-        name={product.name}
-        category={product.category}
-        fit={product.imageFit}
-        priority={priority}
-      />
+      <div className="relative">
+        <DistintivoProvisoria provisoria={product.esProvisoria} />
+        <ProductImage
+          src={product.hasImage ? product.image : undefined}
+          alt={product.alt}
+          name={product.name}
+          category={product.category}
+          fit={product.imageFit}
+          priority={priority}
+        />
+      </div>
 
       <div className="flex flex-1 flex-col gap-2.5 p-3.5 sm:gap-3 sm:p-5">
         <div className="space-y-1">
