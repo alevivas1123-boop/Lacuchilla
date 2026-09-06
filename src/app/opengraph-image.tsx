@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+
 import { ImageResponse } from "next/og";
 
 import { siteConfig } from "@/config/site";
@@ -6,8 +9,20 @@ export const alt = `${siteConfig.name} — ${siteConfig.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-/** Imagen de Open Graph generada con la paleta de la marca. */
+/** El sello se incrusta como data URI: se resuelve al construir el sitio. */
+function readLogoDataUri(): string | null {
+  try {
+    const file = fs.readFileSync(path.join(process.cwd(), "public", "logo.png"));
+    return `data:image/png;base64,${file.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
+/** Imagen de Open Graph: el sello de la marca sobre la paleta de la casa. */
 export default function OpenGraphImage() {
+  const logo = readLogoDataUri();
+
   return new ImageResponse(
     (
       <div
@@ -15,49 +30,39 @@ export default function OpenGraphImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: "80px",
+          alignItems: "center",
+          gap: 64,
+          padding: "0 88px",
           background: "linear-gradient(135deg, #F5EEDF 0%, #ECDFC4 100%)",
           color: "#4A2E1E",
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <svg width="96" height="96" viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="98" fill="#4A2E1E" />
-            <circle cx="100" cy="100" r="88" fill="#F5EEDF" />
-            <path
-              d="M48 152h104L100 64z"
-              fill="#D9A441"
-              stroke="#4A2E1E"
-              strokeWidth="9"
-              strokeLinejoin="round"
-            />
-            <circle cx="86" cy="126" r="9" fill="#F5EEDF" stroke="#4A2E1E" strokeWidth="5" />
-            <circle cx="116" cy="136" r="6" fill="#F5EEDF" stroke="#4A2E1E" strokeWidth="5" />
-          </svg>
+        {logo ? (
+          <img src={logo} alt="" width={300} height={300} />
+        ) : null}
+
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
               display: "flex",
-              fontSize: 30,
+              fontSize: 26,
               letterSpacing: 8,
               textTransform: "uppercase",
               color: "#727252",
             }}
           >
-            Quesería artesanal
+            Quesería artesanal uruguaya
           </div>
-        </div>
-
-        <div style={{ display: "flex", marginTop: 48, fontSize: 82, fontWeight: 700, lineHeight: 1.05 }}>
-          Quesos con carácter,
-        </div>
-        <div style={{ display: "flex", fontSize: 82, fontWeight: 700, lineHeight: 1.05 }}>
-          directo a tu mesa
-        </div>
-        <div style={{ display: "flex", marginTop: 34, fontSize: 34, color: "#76513A" }}>
-          {siteConfig.name} · Uruguay
+          <div style={{ display: "flex", marginTop: 26, fontSize: 68, fontWeight: 700, lineHeight: 1.08 }}>
+            Quesos con carácter,
+          </div>
+          <div style={{ display: "flex", fontSize: 68, fontWeight: 700, lineHeight: 1.08 }}>
+            directo a tu mesa
+          </div>
+          <div style={{ display: "flex", marginTop: 30, fontSize: 30, color: "#76513A" }}>
+            Quesos, dulces y mermeladas · Pedidos por la web
+          </div>
         </div>
       </div>
     ),

@@ -1,9 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-  <!-- Favicon derivado del logo: versión simplificada para tamaños chicos. -->
-  <circle cx="100" cy="100" r="98" fill="#4A2E1E" />
-  <circle cx="100" cy="100" r="88" fill="#F5EEDF" />
-  <path d="M48 152h104L100 64z"
+  <!-- Favicon: reducción del sello oficial a sus dos gestos reconocibles a
+       16 px — la cuña de queso y la cuchilla cruzada detrás. -->
+  <circle cx="100" cy="100" r="100" fill="#4A2E1E" />
+  <circle cx="100" cy="100" r="87" fill="#F5EEDF" />
+
+  <g transform="rotate(-32 100 100)">
+    <rect x="110" y="28" width="26" height="50" rx="8" fill="#76513A" stroke="#4A2E1E" stroke-width="8" />
+    <path d="M104 78h38v58l-19 26-19-26z"
+          fill="#FFFDF8" stroke="#4A2E1E" stroke-width="8" stroke-linejoin="round" />
+  </g>
+
+  <path d="M36 152h122L97 60z"
         fill="#D9A441" stroke="#4A2E1E" stroke-width="9" stroke-linejoin="round" />
-  <circle cx="86" cy="126" r="9" fill="#F5EEDF" stroke="#4A2E1E" stroke-width="5" />
-  <circle cx="116" cy="136" r="6" fill="#F5EEDF" stroke="#4A2E1E" stroke-width="5" />
+  <circle cx="80" cy="126" r="10" fill="#F5EEDF" stroke="#4A2E1E" stroke-width="5" />
+  <circle cx="115" cy="136" r="7" fill="#F5EEDF" stroke="#4A2E1E" stroke-width="5" />
 </svg>

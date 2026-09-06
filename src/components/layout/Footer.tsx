@@ -19,17 +19,7 @@ export function Footer() {
     <footer className="border-t border-ink/10 bg-ink text-cream">
       <div className="container-page grid gap-9 py-12 md:grid-cols-3">
         <div>
-          <span className="inline-flex items-center gap-2.5">
-            <span className="rounded-full bg-cream p-1">
-              <Logo size={40} withWordmark={false} asLink={false} />
-            </span>
-            <span className="flex flex-col leading-none">
-              <span className="font-display text-lg font-semibold">{siteConfig.name}</span>
-              <span className="mt-1 text-[0.7rem] font-medium tracking-[0.18em] text-cheese uppercase">
-                {siteConfig.tagline}
-              </span>
-            </span>
-          </span>
+          <Logo size={52} tone="cream" withTagline asLink={false} />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/75">
             {siteConfig.shortDescription}
           </p>

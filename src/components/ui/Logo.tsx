@@ -5,18 +5,22 @@ import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/cn";
 
 /**
- * Poné `true` si el logo oficial que dejaste en /public/logo.svg ya incluye
- * el nombre "La Cuchilla" dibujado: así no se repite el texto al lado.
+ * La insignia oficial ya trae dibujado "Quesería La Cuchilla · Quesos con
+ * carácter", pero a 44 px ese texto no se lee: en el header y el footer el
+ * sello acompaña a un nombre en tipografía, que es el que hace el trabajo.
+ * Poné `true` si preferís mostrar únicamente la insignia, sin texto al lado.
  */
 const LOGO_INCLUDES_WORDMARK = false;
 
 interface LogoProps {
-  /** Tamaño del isotipo en píxeles. */
+  /** Tamaño de la insignia en píxeles. */
   size?: number;
-  /** Muestra el nombre y la bajada junto al isotipo. */
+  /** Muestra el nombre y la bajada junto a la insignia. */
   withWordmark?: boolean;
   /** Muestra "Quesos con carácter" bajo el nombre. */
   withTagline?: boolean;
+  /** Pinta la insignia de un color plano (para fondos oscuros). */
+  tone?: "ink" | "cream";
   className?: string;
   /** Si es true, envuelve todo en un enlace a la home. */
   asLink?: boolean;
@@ -26,15 +30,35 @@ export function Logo({
   size = 44,
   withWordmark = true,
   withTagline = false,
+  tone = "ink",
   className,
   asLink = true,
 }: LogoProps) {
   const showWordmark = withWordmark && !LOGO_INCLUDES_WORDMARK;
 
-  const content = (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
+  const badge =
+    tone === "cream" ? (
+      // Sobre el marrón oscuro se recorta la silueta del sello y se rellena
+      // con el crema de la marca, en vez de encajarlo en una chapa clara.
+      <span
+        aria-hidden="true"
+        className="block shrink-0 bg-cream"
+        style={{
+          width: size,
+          height: size,
+          maskImage: "url(/logo-mono.png)",
+          WebkitMaskImage: "url(/logo-mono.png)",
+          maskSize: "contain",
+          WebkitMaskSize: "contain",
+          maskRepeat: "no-repeat",
+          WebkitMaskRepeat: "no-repeat",
+          maskPosition: "center",
+          WebkitMaskPosition: "center",
+        }}
+      />
+    ) : (
       <Image
-        src="/logo.svg"
+        src="/logo.png"
         alt={showWordmark ? "" : siteConfig.name}
         aria-hidden={showWordmark || undefined}
         width={size}
@@ -42,13 +66,28 @@ export function Logo({
         priority
         className="shrink-0"
       />
+    );
+
+  const content = (
+    <span className={cn("inline-flex items-center gap-2.5", className)}>
+      {badge}
       {showWordmark ? (
         <span className="flex flex-col leading-none">
-          <span className="font-display text-lg font-semibold tracking-tight text-ink sm:text-xl">
+          <span
+            className={cn(
+              "font-display text-lg font-semibold tracking-tight sm:text-xl",
+              tone === "cream" ? "text-cream" : "text-ink",
+            )}
+          >
             {siteConfig.name}
           </span>
           {withTagline ? (
-            <span className="mt-1 text-[0.7rem] font-medium tracking-[0.18em] text-bark uppercase">
+            <span
+              className={cn(
+                "mt-1 text-[0.7rem] font-medium tracking-[0.18em] uppercase",
+                tone === "cream" ? "text-cheese" : "text-bark",
+              )}
+            >
               {siteConfig.tagline}
             </span>
           ) : null}

@@ -62,6 +62,8 @@ npm start         # servir el build de producción
 ## Estructura
 
 ```
+brand/                       # originales de marca (no se publican)
+public/                      # logo, máscara y fotos de productos
 src/
 ├── app/                     # rutas del App Router
 │   ├── page.tsx             # / (home = tienda)
@@ -120,19 +122,28 @@ publicar.
 
 ### Logo
 
-El archivo es **`public/logo.svg`** (y `src/app/icon.svg` para el favicon).
-Ambos son una versión provisoria dibujada con la paleta de la marca.
+El sello oficial de La Cuchilla ya está integrado. Los archivos son:
 
-Para poner el logo oficial:
+| Archivo | Para qué |
+| --- | --- |
+| `brand/logo-original.jpg` | Original tal cual llegó, sobre papel. Fuera de `public/`: no se publica, queda como respaldo. |
+| `public/logo.png` | Sello recortado, con **fondo transparente** y tinta en `#4A2E1E`. Es el que se ve en el header. |
+| `public/logo-mono.png` | Misma silueta a 320 px. Se usa como máscara CSS para pintar el sello de crema sobre el marrón del footer. |
+| `src/app/icon.svg` | Favicon: versión plana y simplificada del sello (cuña y cuchilla), pensada para leerse a 16 y 32 px. |
 
-1. Reemplazá `public/logo.svg` por el archivo real, manteniendo el nombre.
-   Ideal: SVG. Si es PNG, guardalo como `public/logo.png` y cambiá el `src`
-   en `src/components/ui/Logo.tsx`.
-2. Si el logo **ya incluye el nombre "La Cuchilla" dibujado**, poné
-   `LOGO_INCLUDES_WORDMARK = true` en `src/components/ui/Logo.tsx` para que el
-   texto no se duplique al lado.
-3. Opcional: reemplazá `src/app/icon.svg` por una versión simplificada del
-   logo (se ve a 32 px, conviene que sea simple).
+El JPG original venía sobre papel texturado. Se le extrajo el fondo pasando la
+luminancia a canal alfa: el papel queda transparente, la tinta conserva su
+trama y el sello se puede apoyar sobre cualquier color de la paleta. Por eso
+en el footer aparece en crema sobre marrón sin ninguna chapa de fondo.
+
+El sello incluye dibujado "Quesería La Cuchilla · Quesos con carácter", pero a
+44 px ese texto no se lee: por eso el header y el footer lo acompañan con el
+nombre en tipografía. Si preferís mostrar solo la insignia, poné
+`LOGO_INCLUDES_WORDMARK = true` en `src/components/ui/Logo.tsx`.
+
+**Si cambia el logo**, reemplazá `public/logo.png` (PNG con transparencia,
+cuadrado, 1024 px) y `public/logo-mono.png` (la misma silueta a 320 px, el
+color no importa: solo se usa el canal alfa).
 
 ### Fotografías
 

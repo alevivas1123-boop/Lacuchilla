@@ -34,7 +34,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-ink/10 bg-cream/92 backdrop-blur-sm">
       <div className="container-page flex h-16 items-center justify-between gap-4 sm:h-18">
-        <Logo size={40} withTagline />
+        <Logo size={48} withTagline />
 
         <nav aria-label="Navegación principal" className="hidden md:block">
           <ul className="flex items-center gap-1">
