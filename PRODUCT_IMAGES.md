@@ -91,11 +91,16 @@ image: "/products/queso-colonia.webp",
 alt: "Queso Colonia de La Cuchilla",
 ```
 
-### Imagen del hero (opcional)
+### Imagen del hero
 
-Si dejás una foto en `public/hero.webp`, la portada la usa en lugar de la
-ilustración de marca. Recomendado: **1600 × 1200 px**, 4:3, una tabla de
-quesos y dulces bien iluminada.
+`public/hero.webp` (1600 × 1200, 4:3) es una **composición armada con tres de
+las fotos de producto** —la tabla de quesos, la mermelada de frutilla y el
+queso untable— recortadas al centro sin deformar y separadas por franjas
+crema. Arrastra la misma advertencia de licencia que el resto del material
+provisorio.
+
+Para reemplazarla alcanza con dejar otra foto en `public/hero.webp`. Si el
+archivo no existe, la portada vuelve sola a la ilustración de marca.
 
 ## Cómo optimizar antes de subir
 

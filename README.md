@@ -119,9 +119,13 @@ Todo vive en **`src/data/products.ts`**. Cada producto es un objeto tipado:
 ### Datos de contacto
 
 Están centralizados en **`src/config/site.ts`**: WhatsApp, Instagram,
-dirección, horarios, email y el aviso de pago por transferencia. Los valores
-actuales son **placeholders**: hay que reemplazarlos por los reales antes de
-publicar.
+dirección, horarios, email y el aviso de pago por transferencia.
+
+El WhatsApp ya es el real (**+598 99 617 718**). Instagram, dirección y email
+están **vacíos a propósito**: la web omite del contacto y del pie cualquier
+dato en blanco, así no se muestra información inventada. Completalos cuando el
+negocio los confirme y aparecen solos. Los horarios son genéricos y conviene
+confirmarlos.
 
 ### Logo
 

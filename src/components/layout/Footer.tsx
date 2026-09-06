@@ -55,21 +55,25 @@ export function Footer() {
                 {contact.whatsappDisplay}
               </a>
             </li>
-            <li>
-              <a
-                href={contact.instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center gap-2 transition-colors hover:text-cheese focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cheese"
-              >
-                <Camera aria-hidden="true" className="size-4" />
-                {contact.instagramHandle}
-              </a>
-            </li>
-            <li className="pt-1">{contact.address}</li>
-            <li>
-              {contact.hours[0].days}: {contact.hours[0].time}
-            </li>
+            {contact.instagramHandle && contact.instagramUrl ? (
+              <li>
+                <a
+                  href={contact.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 items-center gap-2 transition-colors hover:text-cheese focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cheese"
+                >
+                  <Camera aria-hidden="true" className="size-4" />
+                  {contact.instagramHandle}
+                </a>
+              </li>
+            ) : null}
+            {contact.address ? <li className="pt-1">{contact.address}</li> : null}
+            {contact.hours.length > 0 ? (
+              <li className="pt-1">
+                {contact.hours[0].days}: {contact.hours[0].time}
+              </li>
+            ) : null}
           </ul>
         </div>
       </div>

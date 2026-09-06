@@ -16,18 +16,24 @@ export const siteConfig = {
   currency: "UYU",
 
   contact: {
-    /** PLACEHOLDER: número real de WhatsApp en formato internacional, sin signos. */
-    whatsappNumber: "59800000000",
-    /** PLACEHOLDER: cómo se muestra el número en pantalla. */
-    whatsappDisplay: "+598 00 000 000",
-    /** PLACEHOLDER: usuario de Instagram. */
-    instagramHandle: "@lacuchilla.uy",
-    instagramUrl: "https://instagram.com/lacuchilla.uy",
-    /** PLACEHOLDER: dirección del local o punto de retiro. */
-    address: "Camino de la Cuchilla s/n, Uruguay",
-    /** PLACEHOLDER: email de contacto (opcional, se puede dejar vacío). */
-    email: "hola@lacuchilla.uy",
-    /** PLACEHOLDER: horarios de atención. */
+    /** Número real de WhatsApp, en formato internacional y sin signos. */
+    whatsappNumber: "59899617718",
+    /** Cómo se muestra el número en pantalla. */
+    whatsappDisplay: "+598 99 617 718",
+
+    /*
+     * Los campos de abajo se dejan vacíos a propósito: la web omite del
+     * contacto y del pie cualquier dato que esté en blanco, así no se muestra
+     * información inventada. Completalos cuando el negocio los confirme.
+     */
+    /** Usuario de Instagram. Ej: "@lacuchilla.uy". Vacío = no se muestra. */
+    instagramHandle: "",
+    instagramUrl: "",
+    /** Dirección del local o punto de retiro. Vacío = no se muestra. */
+    address: "",
+    /** Email de contacto. Vacío = no se muestra. */
+    email: "",
+    /** Horarios de atención. Lista vacía = no se muestra la tarjeta. */
     hours: [
       { days: "Lunes a viernes", time: "9:00 a 18:00" },
       { days: "Sábados", time: "9:00 a 13:00" },
@@ -38,7 +44,7 @@ export const siteConfig = {
   /** Mensaje único sobre cómo se cobra el pedido en esta etapa. */
   paymentNotice:
     "El pago se coordinará mediante transferencia bancaria una vez confirmado el pedido.",
-} as const;
+};
 
 export function whatsappLink(message?: string) {
   const base = `https://wa.me/${siteConfig.contact.whatsappNumber}`;
