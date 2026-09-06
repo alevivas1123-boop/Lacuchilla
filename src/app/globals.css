@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Sistema visual de La Cuchilla
+   Paleta cálida de quesería artesanal. Un solo tema (claro): la marca vive
+   sobre fondo crema, así que no hay variante oscura.
+   ────────────────────────────────────────────────────────────────────────── */
+@theme {
+  --color-cream: #f5eedf;
+  --color-cream-deep: #ece1cb;
+  --color-ink: #4a2e1e;
+  --color-bark: #76513a;
+  --color-cheese: #d9a441;
+  --color-cheese-deep: #c08d2e;
+  --color-olive: #727252;
+  --color-card: #fffdf8;
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-display: var(--font-display), ui-serif, Georgia, "Times New Roman", serif;
+
+  --radius-card: 1rem;
+
+  --shadow-soft: 0 1px 2px rgb(74 46 30 / 0.06), 0 8px 24px -12px rgb(74 46 30 / 0.22);
+  --shadow-lifted: 0 2px 4px rgb(74 46 30 / 0.08), 0 18px 36px -18px rgb(74 46 30 / 0.32);
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Compensa el header sticky al saltar a una sección con #ancla. */
+  scroll-padding-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Foco visible y consistente en toda la web (accesibilidad por teclado). */
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+  border-radius: 0.35rem;
+}
+
+/* Oculta las flechas de los inputs numéricos del carrito. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-page {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-page {
+    padding-inline: 2rem;
+  }
+}
+
+/* Entrada suave de los toasts. */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 180ms ease-out;
+}

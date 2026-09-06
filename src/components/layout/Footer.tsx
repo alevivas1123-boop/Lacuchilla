@@ -1,0 +1,99 @@
+import Link from "next/link";
+import { Camera, MessageCircle } from "lucide-react";
+
+import { Logo } from "@/components/ui/Logo";
+import { siteConfig, whatsappLink } from "@/config/site";
+
+const footerLinks = [
+  { href: "/#productos", label: "Productos" },
+  { href: "/#como-comprar", label: "Cómo comprar" },
+  { href: "/#contacto", label: "Contacto" },
+  { href: "/carrito", label: "Mi carrito" },
+];
+
+export function Footer() {
+  const { contact } = siteConfig;
+  const year = new Date().getFullYear();
+
+  return (
+    <footer className="border-t border-ink/10 bg-ink text-cream">
+      <div className="container-page grid gap-9 py-12 md:grid-cols-3">
+        <div>
+          <span className="inline-flex items-center gap-2.5">
+            <span className="rounded-full bg-cream p-1">
+              <Logo size={40} withWordmark={false} asLink={false} />
+            </span>
+            <span className="flex flex-col leading-none">
+              <span className="font-display text-lg font-semibold">{siteConfig.name}</span>
+              <span className="mt-1 text-[0.7rem] font-medium tracking-[0.18em] text-cheese uppercase">
+                {siteConfig.tagline}
+              </span>
+            </span>
+          </span>
+          <p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/75">
+            {siteConfig.shortDescription}
+          </p>
+        </div>
+
+        <nav aria-label="Navegación del pie de página">
+          <h2 className="font-display text-base font-semibold">Navegación</h2>
+          <ul className="mt-3 space-y-1">
+            {footerLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="inline-flex min-h-9 items-center text-sm text-cream/80 transition-colors hover:text-cheese focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cheese"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div>
+          <h2 className="font-display text-base font-semibold">Contacto</h2>
+          <ul className="mt-3 space-y-2 text-sm text-cream/80">
+            <li>
+              <a
+                href={whatsappLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-9 items-center gap-2 transition-colors hover:text-cheese focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cheese"
+              >
+                <MessageCircle aria-hidden="true" className="size-4" />
+                {contact.whatsappDisplay}
+              </a>
+            </li>
+            <li>
+              <a
+                href={contact.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-9 items-center gap-2 transition-colors hover:text-cheese focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cheese"
+              >
+                <Camera aria-hidden="true" className="size-4" />
+                {contact.instagramHandle}
+              </a>
+            </li>
+            <li className="pt-1">{contact.address}</li>
+            <li>
+              {contact.hours[0].days}: {contact.hours[0].time}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="border-t border-cream/15">
+        <div className="container-page flex flex-col gap-1.5 py-5 text-xs text-cream/60 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} {siteConfig.name}. Todos los derechos reservados.
+          </p>
+          <p className="font-display text-sm tracking-wide text-cream/75">
+            {siteConfig.name} — {siteConfig.tagline}
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}

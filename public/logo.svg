@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="La Cuchilla">
+  <title>La Cuchilla</title>
+  <!-- PLACEHOLDER de marca: reemplazar por el logo oficial de La Cuchilla
+       manteniendo el nombre de archivo (public/logo.svg). Ver README.md. -->
+  <circle cx="100" cy="100" r="98" fill="#4A2E1E" />
+  <circle cx="100" cy="100" r="89" fill="#F5EEDF" />
+  <circle cx="100" cy="100" r="83" fill="none" stroke="#D9A441" stroke-width="2"
+          stroke-dasharray="4 6" stroke-linecap="round" />
+
+  <!-- Cuchilla, detrás de la cuña -->
+  <g transform="rotate(-18 100 100)">
+    <path d="M34 96c18-9 44-12 66-11v17c-22 1-48-1-66-6z"
+          fill="#FFFDF8" stroke="#4A2E1E" stroke-width="5" stroke-linejoin="round" />
+    <rect x="99" y="83" width="8" height="21" rx="2" fill="#4A2E1E" />
+    <path d="M107 84h44a7 7 0 0 1 7 7v6a7 7 0 0 1-7 7h-44z"
+          fill="#76513A" stroke="#4A2E1E" stroke-width="5" stroke-linejoin="round" />
+    <circle cx="121" cy="94" r="2.6" fill="#F5EEDF" />
+    <circle cx="135" cy="94" r="2.6" fill="#F5EEDF" />
+  </g>
+
+  <!-- Cuña de queso -->
+  <path d="M56 146h88L100 74z"
+        fill="#D9A441" stroke="#4A2E1E" stroke-width="6" stroke-linejoin="round" />
+  <path d="M56 146h88" stroke="#C08D2E" stroke-width="6" stroke-linecap="round" />
+  <circle cx="88" cy="126" r="7" fill="#F5EEDF" stroke="#4A2E1E" stroke-width="3.5" />
+  <circle cx="113" cy="133" r="5" fill="#F5EEDF" stroke="#4A2E1E" stroke-width="3.5" />
+  <circle cx="101" cy="105" r="4.5" fill="#F5EEDF" stroke="#4A2E1E" stroke-width="3.5" />
+</svg>
