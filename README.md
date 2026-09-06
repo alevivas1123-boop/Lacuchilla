@@ -174,7 +174,29 @@ El proyecto no necesita variables de entorno ni servicios externos.
 - Áreas táctiles de 44 px como mínimo en botones y selectores.
 - Sin errores de TypeScript, sin advertencias de ESLint y sin errores de
   consola en el navegador.
-- Recorrido verificado en 390 × 844 (móvil) y 1440 × 900 (escritorio).
+- Ningún texto por debajo de 12 px y ningún campo por debajo de 16 px: a menos
+  de 16 px, iOS hace zoom automático al enfocar un input y descoloca la página.
+
+### Auditoría responsive
+
+El recorrido completo se verificó en **14 anchos**, de 320 px a 1920 px, más
+apaisado (844 × 390), sobre las cuatro rutas y con el carrito lateral y el menú
+móvil abiertos. En cada combinación se midió:
+
+- desborde horizontal del documento y elementos que se salen del viewport;
+- áreas táctiles por debajo de 44 px;
+- texto por debajo de 12 px y campos por debajo de 16 px;
+- texto recortado, errores de consola y respuestas HTTP 4xx/5xx.
+
+Resultado: sin desbordes, sin errores de consola y sin peticiones fallidas en
+ningún ancho. El flujo de compra completo (filtrar, elegir kilos, agregar,
+modificar el carrito, validar el checkout y confirmar) se probó de punta a
+punta en 320, 390, 768 y 1440 px.
+
+Puntos de quiebre del catálogo: una columna hasta 379 px, dos desde 380 px,
+tres desde 1024 px y cuatro desde 1280 px. El selector de kilos es un
+desplegable nativo por debajo de 640 px y un control segmentado de cinco
+pastillas a partir de ahí.
 
 ## Fase 2 — qué queda pendiente
 
