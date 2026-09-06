@@ -42,7 +42,7 @@ export function WeightSelector({
             )}
           >
             {option}
-            <span className="ml-0.5 text-[0.7rem] font-medium opacity-75">kg</span>
+            <span className="ml-0.5 text-xs font-medium opacity-75">kg</span>
           </button>
         );
       })}

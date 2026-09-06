@@ -21,7 +21,7 @@ export function Catalog({ products }: { products: Product[] }) {
     <section id="productos" className="scroll-mt-24 bg-cream py-14 sm:py-20">
       <div className="container-page">
         <header className="max-w-2xl">
-          <p className="text-[0.7rem] font-semibold tracking-[0.2em] text-olive uppercase">
+          <p className="text-xs font-semibold tracking-[0.18em] text-olive uppercase">
             Nuestro catálogo
           </p>
           <h2 className="mt-2 font-display text-3xl font-semibold text-ink sm:text-4xl">

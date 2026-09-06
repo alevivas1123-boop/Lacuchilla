@@ -67,7 +67,7 @@ function HeroVisual({ hasPhoto }: { hasPhoto: boolean }) {
         <rect x="82" y="130" width="46" height="66" rx="8" fill="#B4703F" stroke="#4A2E1E" strokeWidth="6" />
         <rect x="78" y="118" width="54" height="16" rx="6" fill="#727252" stroke="#4A2E1E" strokeWidth="6" />
       </svg>
-      <p className="absolute right-4 bottom-4 rounded-full bg-cream/85 px-3 py-1.5 text-[0.7rem] font-semibold tracking-[0.14em] text-bark uppercase">
+      <p className="absolute right-4 bottom-4 rounded-full bg-cream/85 px-3 py-1.5 text-xs font-semibold tracking-[0.12em] text-bark uppercase">
         Elaboración artesanal
       </p>
     </div>
@@ -79,7 +79,7 @@ export function Hero({ hasPhoto }: { hasPhoto: boolean }) {
     <section className="border-b border-ink/10 bg-cream">
       <div className="container-page grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:py-20">
         <div className="max-w-xl">
-          <p className="text-[0.7rem] font-semibold tracking-[0.2em] text-olive uppercase">
+          <p className="text-xs font-semibold tracking-[0.18em] text-olive uppercase">
             Quesería artesanal uruguaya
           </p>
           <h1 className="mt-3 font-display text-4xl leading-[1.05] font-semibold text-balance text-ink sm:text-5xl lg:text-6xl">

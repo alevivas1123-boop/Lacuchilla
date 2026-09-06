@@ -97,7 +97,7 @@ export function OrderConfirmation() {
         </div>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start [&>*]:min-w-0">
         <OrderSummary items={order.items} total={order.total} title="Lo que pediste" />
 
         <div className="rounded-card border border-ink/10 bg-card p-5 sm:p-6">
@@ -124,7 +124,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-0.5 border-b border-ink/8 pb-3 last:border-0 last:pb-0 sm:flex-row sm:justify-between sm:gap-6">
       <dt className="font-medium text-bark">{label}</dt>
-      <dd className="text-ink sm:max-w-[60%] sm:text-right">{value}</dd>
+      <dd className="text-ink break-words sm:max-w-[60%] sm:text-right">{value}</dd>
     </div>
   );
 }

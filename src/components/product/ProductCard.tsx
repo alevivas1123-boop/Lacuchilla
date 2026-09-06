@@ -50,7 +50,7 @@ export function ProductCard({ product, priority = false }: { product: Product; p
 
       <div className="flex flex-1 flex-col gap-2.5 p-3.5 sm:gap-3 sm:p-5">
         <div className="space-y-1">
-          <p className="text-[0.68rem] font-semibold tracking-[0.16em] text-olive uppercase">
+          <p className="text-xs font-semibold tracking-[0.14em] text-olive uppercase">
             {categoryLabel[product.category]}
           </p>
           <h3 className="font-display text-base leading-tight font-semibold text-ink sm:text-lg">
@@ -85,7 +85,7 @@ export function ProductCard({ product, priority = false }: { product: Product; p
                 aria-label={`Peso — ${product.name}`}
                 value={quantity}
                 onChange={(event) => setQuantity(Number(event.target.value))}
-                className="min-h-11 w-full rounded-lg border-2 border-ink/15 bg-cream px-3 text-sm font-semibold text-ink hover:border-ink/40 focus:border-ink focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ink sm:hidden"
+                className="min-h-11 w-full rounded-lg border-2 border-ink/15 bg-cream px-3 text-base font-semibold text-ink hover:border-ink/40 focus:border-ink focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ink sm:hidden"
               >
                 {options.map((option) => (
                   <option key={option} value={option}>

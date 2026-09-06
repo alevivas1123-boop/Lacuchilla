@@ -17,7 +17,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-ink/10 bg-ink text-cream">
-      <div className="container-page grid gap-9 py-12 md:grid-cols-3">
+      <div className="container-page grid gap-9 py-12 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <Logo size={52} tone="cream" withTagline asLink={false} />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/75">
@@ -32,7 +32,7 @@ export function Footer() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="inline-flex min-h-9 items-center text-sm text-cream/80 transition-colors hover:text-cheese focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cheese"
+                  className="inline-flex min-h-11 items-center text-sm text-cream/80 transition-colors hover:text-cheese focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cheese"
                 >
                   {link.label}
                 </Link>
@@ -49,7 +49,7 @@ export function Footer() {
                 href={whatsappLink()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-9 items-center gap-2 transition-colors hover:text-cheese focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cheese"
+                className="inline-flex min-h-11 items-center gap-2 transition-colors hover:text-cheese focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cheese"
               >
                 <MessageCircle aria-hidden="true" className="size-4" />
                 {contact.whatsappDisplay}
@@ -60,7 +60,7 @@ export function Footer() {
                 href={contact.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-9 items-center gap-2 transition-colors hover:text-cheese focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cheese"
+                className="inline-flex min-h-11 items-center gap-2 transition-colors hover:text-cheese focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cheese"
               >
                 <Camera aria-hidden="true" className="size-4" />
                 {contact.instagramHandle}

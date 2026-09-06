@@ -9,7 +9,7 @@ export function Contact() {
     <section id="contacto" className="scroll-mt-24 bg-cream py-14 sm:py-18">
       <div className="container-page">
         <header className="max-w-2xl">
-          <p className="text-[0.7rem] font-semibold tracking-[0.2em] text-olive uppercase">
+          <p className="text-xs font-semibold tracking-[0.18em] text-olive uppercase">
             Contacto
           </p>
           <h2 className="mt-2 font-display text-3xl font-semibold text-ink sm:text-4xl">
@@ -29,7 +29,7 @@ export function Contact() {
               href={whatsappLink(`Hola ${siteConfig.name}, quisiera hacer una consulta.`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1 inline-block text-sm font-medium text-bark underline underline-offset-4 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+              className="mt-1 inline-flex min-h-11 items-center text-sm font-medium text-bark underline underline-offset-4 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >
               {contact.whatsappDisplay}
             </a>
@@ -42,7 +42,7 @@ export function Contact() {
               href={contact.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1 inline-block text-sm font-medium text-bark underline underline-offset-4 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+              className="mt-1 inline-flex min-h-11 items-center text-sm font-medium text-bark underline underline-offset-4 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >
               {contact.instagramHandle}
             </a>

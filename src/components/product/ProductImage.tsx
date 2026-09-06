@@ -105,7 +105,7 @@ export function ProductImage({
             <span className="line-clamp-2 font-display text-xs leading-snug font-semibold text-ink/75 sm:text-sm">
               {name}
             </span>
-            <span className="hidden text-[0.65rem] font-medium tracking-[0.16em] text-ink/45 uppercase sm:block">
+            <span className="hidden text-xs font-medium tracking-[0.14em] text-ink/45 uppercase sm:block">
               Foto en camino
             </span>
           </>

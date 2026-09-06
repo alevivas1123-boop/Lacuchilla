@@ -19,6 +19,8 @@ interface LogoProps {
   withWordmark?: boolean;
   /** Muestra "Quesos con carácter" bajo el nombre. */
   withTagline?: boolean;
+  /** Clases extra para la bajada (por ejemplo, ocultarla en pantallas muy angostas). */
+  taglineClassName?: string;
   /** Pinta la insignia de un color plano (para fondos oscuros). */
   tone?: "ink" | "cream";
   className?: string;
@@ -30,6 +32,7 @@ export function Logo({
   size = 44,
   withWordmark = true,
   withTagline = false,
+  taglineClassName,
   tone = "ink",
   className,
   asLink = true,
@@ -84,8 +87,9 @@ export function Logo({
           {withTagline ? (
             <span
               className={cn(
-                "mt-1 text-[0.7rem] font-medium tracking-[0.18em] uppercase",
+                "mt-1 text-[0.72rem] font-medium tracking-[0.14em] uppercase",
                 tone === "cream" ? "text-cheese" : "text-bark",
+                taglineClassName,
               )}
             >
               {siteConfig.tagline}

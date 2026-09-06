@@ -65,7 +65,7 @@ export function CartLineItem({ item, availableImages, variant = "drawer" }: Cart
             type="button"
             onClick={() => removeItem(item.id)}
             aria-label={`Eliminar ${item.name} del carrito`}
-            className="-m-1 flex size-9 shrink-0 items-center justify-center rounded-full text-bark transition-colors hover:bg-ink/8 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+            className="-m-1 flex size-11 shrink-0 items-center justify-center rounded-full text-bark transition-colors hover:bg-ink/8 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
           >
             <Trash2 aria-hidden="true" className="size-4" />
           </button>

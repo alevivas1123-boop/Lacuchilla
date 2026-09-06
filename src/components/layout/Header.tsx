@@ -34,7 +34,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-ink/10 bg-cream/92 backdrop-blur-sm">
       <div className="container-page flex h-16 items-center justify-between gap-4 sm:h-18">
-        <Logo size={48} withTagline />
+        <Logo size={48} withTagline taglineClassName="hidden min-[380px]:block" />
 
         <nav aria-label="Navegación principal" className="hidden md:block">
           <ul className="flex items-center gap-1">
@@ -66,7 +66,7 @@ export function Header() {
             {count > 0 ? (
               <span
                 aria-hidden="true"
-                className="absolute -top-0.5 -right-0.5 flex min-w-5 items-center justify-center rounded-full bg-cheese px-1.5 py-0.5 text-[0.7rem] font-bold text-ink tabular-nums"
+                className="absolute -top-0.5 -right-0.5 flex min-w-5 items-center justify-center rounded-full bg-cheese px-1.5 py-0.5 text-xs font-bold text-ink tabular-nums"
               >
                 {count}
               </span>
