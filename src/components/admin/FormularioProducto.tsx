@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/Button";
 import { buttonStyles } from "@/components/ui/button-styles";
 import { CATEGORIES } from "@/lib/categorias";
 import { cn } from "@/lib/cn";
-import { centesimosAPesos } from "@/lib/money";
 import { generarSlug, TAMANO_MAXIMO_IMAGEN } from "@/lib/product-schema";
 import type { ProductoAdmin } from "@/lib/types";
 
@@ -146,16 +145,16 @@ export function FormularioProducto({ producto }: { producto?: ProductoAdmin }) {
             id="price"
             label="Precio en pesos uruguayos"
             required
-            hint="Sin símbolo. Ej: 390 o 390,50."
-            error={error("priceCents")}
+            hint="En pesos enteros, sin símbolo ni centésimos. Ej: 390."
+            error={error("price")}
           >
             <input
               id="price"
               name="price"
-              inputMode="decimal"
-              defaultValue={valor("price", producto ? centesimosAPesos(producto.priceCents) : "")}
+              inputMode="numeric"
+              defaultValue={valor("price", producto ? String(producto.price) : "")}
               className={inputClass}
-              aria-invalid={Boolean(error("priceCents"))}
+              aria-invalid={Boolean(error("price"))}
               required
             />
           </Field>

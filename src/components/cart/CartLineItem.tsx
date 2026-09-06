@@ -56,7 +56,7 @@ export function CartLineItem({ item, variant = "drawer" }: CartLineItemProps) {
                 : item.presentation}
             </p>
             <p className="text-sm text-bark/80">
-              {formatPrice(item.unitPriceCents)} {unitLabelText(item.unitLabel)}
+              {formatPrice(item.unitPrice)} {unitLabelText(item.unitLabel)}
             </p>
           </div>
 

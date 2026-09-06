@@ -31,7 +31,7 @@ export function OrderSummary({
                   ? formatQuantity(item.quantity, item.unitLabel)
                   : `${formatQuantity(item.quantity, item.unitLabel)} · ${item.presentation}`}
                 {" · "}
-                {formatPrice(item.unitPriceCents)} {unitLabelText(item.unitLabel)}
+                {formatPrice(item.unitPrice)} {unitLabelText(item.unitLabel)}
               </p>
             </div>
             <p className="shrink-0 font-semibold text-ink tabular-nums">

@@ -31,7 +31,7 @@ export function ProductCard({
   const { showToast } = useToast();
   const [justAdded, setJustAdded] = useState(false);
 
-  const total = product.priceCents * quantity;
+  const total = product.price * quantity;
 
   function handleAdd() {
     addItem(product, quantity);
@@ -72,7 +72,7 @@ export function ProductCard({
 
         <p className="mt-auto pt-1">
           <span className="font-display text-xl font-semibold text-ink sm:text-2xl">
-            {formatPrice(product.priceCents)}
+            {formatPrice(product.price)}
           </span>{" "}
           <span className="text-sm font-medium text-bark">{unitLabelText(product.unitLabel)}</span>
         </p>

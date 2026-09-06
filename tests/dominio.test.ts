@@ -1,41 +1,54 @@
 import { describe, expect, it } from "vitest";
 
-import { centesimosAPesos, formatearPesos, pesosACentesimos } from "@/lib/money";
+import { formatearPesos, parsearPesos } from "@/lib/money";
 import { generarSlug, productoSchema } from "@/lib/product-schema";
 import { ajustarCantidad, opcionesDeCantidad } from "@/lib/types";
 
 describe("dinero", () => {
-  it("formatea pesos uruguayos sin decimales y con punto de miles", () => {
-    expect(formatearPesos(39000)).toBe("$390");
-    expect(formatearPesos(117000)).toBe("$1.170");
-    expect(formatearPesos(245000)).toBe("$2.450");
-    expect(formatearPesos(100000000)).toBe("$1.000.000");
+  it("formatea pesos uruguayos con punto de miles", () => {
+    expect(formatearPesos(390)).toBe("$390");
+    expect(formatearPesos(1170)).toBe("$1.170");
+    expect(formatearPesos(2450)).toBe("$2.450");
+    expect(formatearPesos(1000000)).toBe("$1.000.000");
   });
 
-  it("muestra los centésimos solo cuando existen", () => {
-    expect(formatearPesos(39050)).toBe("$390,50");
-    expect(formatearPesos(39005)).toBe("$390,05");
+  it("acepta enteros y tolera el punto de miles al escribir", () => {
+    expect(parsearPesos("390")).toBe(390);
+    expect(parsearPesos(" 1170 ")).toBe(1170);
+    expect(parsearPesos("1.170")).toBe(1170);
   });
 
-  it("convierte a centésimos sin errores de coma flotante", () => {
-    expect(pesosACentesimos("390")).toBe(39000);
-    expect(pesosACentesimos("390,50")).toBe(39050);
-    expect(pesosACentesimos("390.5")).toBe(39050);
-    expect(pesosACentesimos("0.07")).toBe(7);
-    // El caso clásico: 0.1 + 0.2 en binario no da 0.3.
-    expect(pesosACentesimos("1.10")! + pesosACentesimos("2.20")!).toBe(330);
+  it("rechaza decimales: los precios son enteros", () => {
+    expect(parsearPesos("390,50")).toBeNull();
+    expect(parsearPesos("0,07")).toBeNull();
+  });
+
+  it("no confunde un decimal con un separador de miles", () => {
+    // Si se borrara el punto sin mirar, "390.5" quedaría en 3905: un precio
+    // diez veces mayor cargado sin que nadie lo note.
+    expect(parsearPesos("390.5")).toBeNull();
+    expect(parsearPesos("1.17")).toBeNull();
+    expect(parsearPesos("1.1700")).toBeNull();
+    // El punto solo vale separando grupos de tres.
+    expect(parsearPesos("1.170")).toBe(1170);
+    expect(parsearPesos("12.345.678")).toBe(12345678);
   });
 
   it("rechaza entradas que no son importes", () => {
-    expect(pesosACentesimos("")).toBeNull();
-    expect(pesosACentesimos("abc")).toBeNull();
-    expect(pesosACentesimos("-5")).toBeNull();
-    expect(pesosACentesimos("1.234")).toBeNull();
+    expect(parsearPesos("")).toBeNull();
+    expect(parsearPesos("abc")).toBeNull();
+    expect(parsearPesos("-5")).toBeNull();
+  });
+
+  it("los totales son aritmética entera exacta", () => {
+    const linea = (precio: number, cantidad: number) => precio * cantidad;
+    expect(linea(390, 3) + linea(120, 2)).toBe(1410);
+    expect(formatearPesos(linea(390, 3))).toBe("$1.170");
   });
 
   it("va y vuelve sin perder valor", () => {
-    for (const centesimos of [1, 7, 100, 39000, 117000, 69000]) {
-      expect(pesosACentesimos(centesimosAPesos(centesimos))).toBe(centesimos);
+    for (const pesos of [1, 7, 100, 390, 1170, 690]) {
+      expect(parsearPesos(String(pesos))).toBe(pesos);
     }
   });
 });
@@ -93,7 +106,7 @@ describe("validación del producto", () => {
     name: "Queso de prueba",
     slug: "queso-de-prueba",
     category: "quesos",
-    priceCents: "390",
+    price: "390",
     saleType: "weight",
     unitLabel: "kg",
     minQuantity: "1",
@@ -107,12 +120,16 @@ describe("validación del producto", () => {
   it("acepta un producto correcto y convierte el precio a centésimos", () => {
     const resultado = productoSchema.safeParse(base);
     expect(resultado.success).toBe(true);
-    if (resultado.success) expect(resultado.data.priceCents).toBe(39000);
+    if (resultado.success) expect(resultado.data.price).toBe(390);
+  });
+
+  it("rechaza precios con decimales", () => {
+    expect(productoSchema.safeParse({ ...base, price: "390,50" }).success).toBe(false);
   });
 
   it("rechaza precio cero o negativo", () => {
-    expect(productoSchema.safeParse({ ...base, priceCents: "0" }).success).toBe(false);
-    expect(productoSchema.safeParse({ ...base, priceCents: "-10" }).success).toBe(false);
+    expect(productoSchema.safeParse({ ...base, price: "0" }).success).toBe(false);
+    expect(productoSchema.safeParse({ ...base, price: "-10" }).success).toBe(false);
   });
 
   it("rechaza un rango de cantidades imposible", () => {

@@ -29,7 +29,7 @@ function aLineaDeCarrito(product: Producto, quantity: number): CartItem {
     saleType: product.saleType,
     unitLabel: product.unitLabel,
     presentation: product.presentation,
-    unitPriceCents: product.priceCents,
+    unitPrice: product.price,
     quantity: ajustarCantidad(quantity, product),
     minQuantity: product.minQuantity,
     maxQuantity: product.maxQuantity,
@@ -120,15 +120,15 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: "la-cuchilla:cart",
-      // v2: los precios pasaron de pesos a centésimos y las líneas guardan su
-      // propia configuración de cantidades.
-      version: 2,
+      // v3: las líneas guardan su propia configuración de cantidades y el
+      // precio es un entero en pesos.
+      version: 3,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ items: state.items }),
       migrate: (estado, versionPrevia) => {
         const guardado = estado as { items?: unknown[] } | undefined;
         if (!guardado?.items) return { items: [] };
-        if (versionPrevia >= 2) return guardado as { items: CartItem[] };
+        if (versionPrevia >= 3) return guardado as { items: CartItem[] };
         // Un carrito viejo tiene precios en pesos y no conoce los límites.
         // Se descarta: reconstruirlo mal sería peor que pedirle al cliente que
         // vuelva a elegir, y los datos correctos están a un clic.
@@ -141,7 +141,7 @@ export const useCartStore = create<CartState>()(
 
 /** Subtotal de una línea, en centésimos. */
 export function lineTotal(item: CartItem): number {
-  return item.unitPriceCents * item.quantity;
+  return item.unitPrice * item.quantity;
 }
 
 export function cartTotal(items: CartItem[]): number {

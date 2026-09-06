@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { pesosACentesimos } from "@/lib/money";
+import { parsearPesos } from "@/lib/money";
 
 /**
  * Validación del formulario de producto.
@@ -30,16 +30,19 @@ const precio = z
   .trim()
   .min(1, "Escribí el precio.")
   .transform((valor, ctx) => {
-    const centesimos = pesosACentesimos(valor);
-    if (centesimos === null) {
-      ctx.addIssue({ code: "custom", message: "Usá solo números, con hasta dos decimales." });
+    const pesos = parsearPesos(valor);
+    if (pesos === null) {
+      ctx.addIssue({
+        code: "custom",
+        message: "El precio va en pesos enteros, sin centésimos. Ej: 390.",
+      });
       return z.NEVER;
     }
-    if (centesimos <= 0) {
+    if (pesos <= 0) {
       ctx.addIssue({ code: "custom", message: "El precio tiene que ser mayor que cero." });
       return z.NEVER;
     }
-    return centesimos;
+    return pesos;
   });
 
 const entero = (mensaje: string) =>
@@ -69,7 +72,7 @@ export const productoSchema = z
       ),
     description: z.string().trim().max(600, "Máximo 600 caracteres.").optional(),
     category: z.enum(CATEGORIAS, { message: "Elegí una categoría." }),
-    priceCents: precio,
+    price: precio,
     saleType: z.enum(TIPOS_DE_VENTA, { message: "Elegí cómo se vende." }),
     unitLabel: z
       .string()

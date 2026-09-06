@@ -69,7 +69,7 @@ Tabla `products`:
 | `name` | `varchar(160)` | |
 | `description` | `text` | Opcional. |
 | `category` | enum | `quesos`, `dulces`, `otros`. |
-| `price_cents` | `integer` | **Precio en centésimos.** $390 se guarda como `39000`. |
+| `price` | `integer` | **Precio en pesos enteros.** $390 se guarda como `390`. |
 | `currency` | `varchar(3)` | Por ahora siempre `UYU`. |
 | `sale_type` | enum | `weight` (por peso) o `unit` (por unidad). |
 | `unit_label` | `varchar(24)` | Cómo se nombra: `kg`, `unidad`, `frasco`. |
@@ -84,14 +84,20 @@ Tabla `products`:
 | `sort_order` | `integer` | Orden en el catálogo. Menor primero. |
 | `created_at` / `updated_at` | `timestamptz` | |
 
-**El dinero nunca es coma flotante.** Se guarda y se opera en centésimos, como
-entero; la división por 100 ocurre solo al mostrar. Así `1,10 + 2,20` da
-exactamente `3,30` y no `3,3000000000000003`. Ver `src/lib/money.ts`.
+**El dinero nunca es coma flotante.** El negocio maneja precios en pesos
+enteros, así que se guardan como `integer` y los totales del carrito son
+multiplicaciones y sumas de enteros. No hay centésimos en ningún punto.
+
+El formulario acepta `390` y `1.170` —con el punto como separador de miles— y
+**rechaza cualquier decimal**. En particular rechaza `390.5`: si se borrara el
+punto sin mirar quedaría `3905`, un precio diez veces mayor cargado sin que
+nadie lo note. El punto solo vale si separa grupos de exactamente tres dígitos.
+Ver `src/lib/money.ts`.
 
 Restricciones en la base, además de la validación de Zod:
 
 ```sql
-CHECK (price_cents > 0)
+CHECK (price > 0)
 CHECK (min_quantity > 0)
 CHECK (quantity_step > 0)
 CHECK (max_quantity >= min_quantity)
@@ -241,7 +247,7 @@ etiqueta de unidad se propone según el tipo de venta. Validaciones:
 
 - nombre obligatorio;
 - slug único, en minúsculas, números y guiones;
-- precio mayor que cero;
+- precio entero mayor que cero, sin centésimos;
 - cantidad mínima mayor que cero;
 - máximo mayor o igual que el mínimo;
 - incremento mayor que cero;

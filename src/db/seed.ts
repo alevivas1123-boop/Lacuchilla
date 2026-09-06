@@ -25,8 +25,7 @@ export function filasDelSeed(): NewProductRow[] {
     name: producto.name,
     description: producto.description,
     category: producto.category,
-    // El dataset original está en pesos enteros; la base guarda centésimos.
-    priceCents: producto.price * 100,
+    price: producto.price,
     currency: "UYU",
     saleType: producto.saleType,
     unitLabel: producto.unitLabel,

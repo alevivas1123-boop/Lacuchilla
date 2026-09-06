@@ -74,7 +74,7 @@ export function TablaProductos({
               </div>
 
               <p className="mt-1 text-sm text-bark">
-                <span className="font-semibold text-ink">{formatPrice(producto.priceCents)}</span>{" "}
+                <span className="font-semibold text-ink">{formatPrice(producto.price)}</span>{" "}
                 por {producto.unitLabel} · {rangoTexto(producto)}
               </p>
               <p className="text-sm text-bark/80">{producto.presentation}</p>
@@ -138,7 +138,7 @@ export function TablaProductos({
                 </td>
                 <td className="px-4 py-3 text-bark">{NOMBRE_CATEGORIA[producto.category]}</td>
                 <td className="px-4 py-3 font-semibold text-ink tabular-nums">
-                  {formatPrice(producto.priceCents)}
+                  {formatPrice(producto.price)}
                 </td>
                 <td className="px-4 py-3 text-bark">
                   {producto.saleType === "weight" ? "Por peso" : "Por unidad"}

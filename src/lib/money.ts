@@ -1,36 +1,37 @@
 /**
- * Dinero en centésimos, siempre como entero.
+ * Precios en pesos uruguayos, siempre como entero.
  *
- * Los precios se guardan y se operan en centésimos de peso uruguayo para no
- * arrastrar errores de coma flotante: $390 es 39000. La división por 100
- * ocurre solo al mostrar.
+ * El negocio no maneja centésimos: los precios son pesos enteros ($390, $1.170).
+ * Guardarlos como `integer` evita cualquier error de coma flotante en los
+ * totales del carrito, que se calculan multiplicando y sumando enteros.
  */
 
-/** 39000 -> "$390". 117000 -> "$1.170". */
-export function formatearPesos(centesimos: number): string {
-  const pesos = Math.round(centesimos) / 100;
-  const negativo = pesos < 0;
-  const absoluto = Math.abs(pesos);
-  const entero = Math.trunc(absoluto);
-  const decimales = Math.round((absoluto - entero) * 100);
-
-  const conMiles = entero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  const cuerpo = decimales === 0 ? conMiles : `${conMiles},${String(decimales).padStart(2, "0")}`;
-  return `${negativo ? "-" : ""}$${cuerpo}`;
+/** 390 -> "$390". 1170 -> "$1.170". */
+export function formatearPesos(pesos: number): string {
+  const entero = Math.round(pesos);
+  const signo = entero < 0 ? "-" : "";
+  const conMiles = Math.abs(entero)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${signo}$${conMiles}`;
 }
 
-/** "390" o "390,50" -> 39000 / 39050. Devuelve null si no es un número válido. */
-export function pesosACentesimos(entrada: string | number): number | null {
-  const texto = String(entrada).trim().replace(",", ".");
-  if (texto === "" || !/^\d+(\.\d{1,2})?$/.test(texto)) return null;
-  // Se redondea sobre el string ya normalizado para no depender del binario.
-  const [enteros, decimales = ""] = texto.split(".");
-  const centesimos = Number(enteros) * 100 + Number(decimales.padEnd(2, "0"));
-  return Number.isSafeInteger(centesimos) ? centesimos : null;
-}
+/**
+ * Convierte lo que se escribió en el formulario a un precio entero.
+ *
+ * Acepta "390" y "1.170", donde el punto es separador de miles. Rechaza
+ * cualquier cosa con decimales, incluido "390.5": borrar el punto sin mirar
+ * lo convertiría en 3905, un precio diez veces mayor cargado por accidente.
+ * Por eso el punto solo vale si separa grupos de exactamente tres dígitos.
+ */
+const MILES = /^\d{1,3}(\.\d{3})*$/;
+const SOLO_DIGITOS = /^\d+$/;
 
-/** 39000 -> "390" (para precargar un formulario). */
-export function centesimosAPesos(centesimos: number): string {
-  const pesos = centesimos / 100;
-  return Number.isInteger(pesos) ? String(pesos) : pesos.toFixed(2);
+export function parsearPesos(entrada: string | number): number | null {
+  const texto = String(entrada).trim();
+  if (texto === "") return null;
+  if (!SOLO_DIGITOS.test(texto) && !MILES.test(texto)) return null;
+
+  const valor = Number(texto.replace(/\./g, ""));
+  return Number.isSafeInteger(valor) ? valor : null;
 }

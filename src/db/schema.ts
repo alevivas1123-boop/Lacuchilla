@@ -31,12 +31,11 @@ export const products = pgTable(
     category: categoryEnum("category").notNull(),
 
     /**
-     * Precio en CENTÉSIMOS de la moneda, como entero.
-     * $390 se guarda como 39000. Nunca se usa coma flotante para dinero:
-     * los totales del carrito y del pedido se calculan con enteros y recién
-     * se dividen por 100 al mostrarlos.
+     * Precio en pesos uruguayos ENTEROS. $390 se guarda como 390.
+     * El negocio no maneja centésimos, así que no hay decimales en juego y
+     * los totales del carrito son multiplicaciones y sumas de enteros.
      */
-    priceCents: integer("price_cents").notNull(),
+    price: integer("price").notNull(),
     currency: varchar("currency", { length: 3 }).notNull().default("UYU"),
 
     saleType: saleTypeEnum("sale_type").notNull(),
@@ -72,7 +71,7 @@ export const products = pgTable(
     index("products_category_idx").on(table.category),
     // Las mismas reglas que valida Zod, también en la base: si algún día
     // entra un dato por otra vía, la base lo rechaza igual.
-    check("products_price_positive", sql`${table.priceCents} > 0`),
+    check("products_price_positive", sql`${table.price} > 0`),
     check("products_min_quantity_positive", sql`${table.minQuantity} > 0`),
     check("products_step_positive", sql`${table.quantityStep} > 0`),
     check("products_max_gte_min", sql`${table.maxQuantity} >= ${table.minQuantity}`),

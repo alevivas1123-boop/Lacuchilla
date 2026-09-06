@@ -1,5 +1,5 @@
 {
-  "id": "35acb39c-68fa-49d5-84d5-da7ac58142f4",
+  "id": "ded8d289-6511-4f2e-bcca-b0ce9affdabe",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -40,8 +40,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "price_cents": {
-          "name": "price_cents",
+        "price": {
+          "name": "price",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -200,7 +200,7 @@
       "checkConstraints": {
         "products_price_positive": {
           "name": "products_price_positive",
-          "value": "\"products\".\"price_cents\" > 0"
+          "value": "\"products\".\"price\" > 0"
         },
         "products_min_quantity_positive": {
           "name": "products_min_quantity_positive",

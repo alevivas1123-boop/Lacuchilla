@@ -44,14 +44,14 @@ describe("migración y seed", () => {
     const antes = await obtenerProductoPorSlug("queso-colonia", db);
     await db
       .update(products)
-      .set({ priceCents: 99900 })
+      .set({ price: 999 })
       .where(eq(products.slug, "queso-colonia"));
 
     await sembrarCatalogo(db);
 
     const despues = await obtenerProductoPorSlug("queso-colonia", db);
-    expect(antes?.priceCents).toBe(39000);
-    expect(despues?.priceCents).toBe(99900);
+    expect(antes?.price).toBe(390);
+    expect(despues?.price).toBe(999);
   });
 
   it("conserva slugs, precios y orden del catálogo original", async () => {
@@ -59,7 +59,7 @@ describe("migración y seed", () => {
     const publicos = await listarProductosPublicos(db);
 
     expect(publicos[0].slug).toBe("queso-colonia");
-    expect(publicos[0].priceCents).toBe(39000);
+    expect(publicos[0].price).toBe(390);
     expect(publicos.map((p) => p.slug)).toContain("chorizo-chacarero");
     expect(publicos.every((p) => p.currency === "UYU")).toBe(true);
 
@@ -97,7 +97,7 @@ describe("reglas de la base", () => {
 
   it("rechaza un precio de cero o negativo", async () => {
     await expect(
-      crearProducto({ ...filasDelSeed()[0], priceCents: 0 }, db),
+      crearProducto({ ...filasDelSeed()[0], price: 0 }, db),
     ).rejects.toThrow();
   });
 

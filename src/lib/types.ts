@@ -23,8 +23,8 @@ export interface CartItem {
   saleType: SaleType;
   unitLabel: string;
   presentation: string;
-  /** Precio por kilo o por unidad, en centésimos. */
-  unitPriceCents: number;
+  /** Precio por kilo o por unidad, en pesos enteros. */
+  unitPrice: number;
   /** Kilos (saleType "weight") o unidades (saleType "unit"). */
   quantity: number;
   /**
@@ -54,8 +54,8 @@ export interface Order {
   orderNumber: string;
   createdAt: string;
   items: CartItem[];
-  /** Total en centésimos. */
-  totalCents: number;
+  /** Total del pedido, en pesos enteros. */
+  total: number;
   customer: OrderCustomer;
 }
 
@@ -67,7 +67,7 @@ export function aProductoPublico(fila: ProductRow): Producto {
     name: fila.name,
     description: fila.description,
     category: fila.category,
-    priceCents: fila.priceCents,
+    price: fila.price,
     currency: fila.currency,
     saleType: fila.saleType,
     unitLabel: fila.unitLabel,

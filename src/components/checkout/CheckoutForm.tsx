@@ -96,7 +96,7 @@ export function CheckoutForm() {
       orderNumber: generateOrderNumber(),
       createdAt: new Date().toISOString(),
       items: revision.items,
-      totalCents: revision.totalCents,
+      total: revision.total,
       customer: {
         fullName: values.fullName,
         phone: values.phone,

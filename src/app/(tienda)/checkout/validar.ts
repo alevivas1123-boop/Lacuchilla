@@ -13,7 +13,7 @@ import { ajustarCantidad, type CartItem } from "@/lib/types";
 export interface CarritoRevalidado {
   ok: boolean;
   items: CartItem[];
-  totalCents: number;
+  total: number;
   /** Qué cambió, para poder avisárselo a la persona antes de confirmar. */
   avisos: string[];
   /** true si no se pudo consultar la base: no se debe confirmar el pedido. */
@@ -28,7 +28,7 @@ export async function revalidarCarrito(items: CartItem[]): Promise<CarritoRevali
     return {
       ok: false,
       items,
-      totalCents: 0,
+      total: 0,
       avisos: [],
       sinConexion: true,
     };
@@ -52,7 +52,7 @@ export async function revalidarCarrito(items: CartItem[]): Promise<CarritoRevali
         `La cantidad de ${producto.name} se ajustó a ${cantidad} ${producto.unitLabel}.`,
       );
     }
-    if (producto.priceCents !== item.unitPriceCents) {
+    if (producto.price !== item.unitPrice) {
       avisos.push(`El precio de ${producto.name} cambió y se actualizó en tu pedido.`);
     }
 
@@ -64,7 +64,7 @@ export async function revalidarCarrito(items: CartItem[]): Promise<CarritoRevali
       saleType: producto.saleType,
       unitLabel: producto.unitLabel,
       presentation: producto.presentation,
-      unitPriceCents: producto.priceCents,
+      unitPrice: producto.price,
       quantity: cantidad,
       minQuantity: producto.minQuantity,
       maxQuantity: producto.maxQuantity,
@@ -76,7 +76,7 @@ export async function revalidarCarrito(items: CartItem[]): Promise<CarritoRevali
   return {
     ok: revalidados.length > 0,
     items: revalidados,
-    totalCents: revalidados.reduce((total, item) => total + item.unitPriceCents * item.quantity, 0),
+    total: revalidados.reduce((suma, item) => suma + item.unitPrice * item.quantity, 0),
     avisos,
   };
 }
