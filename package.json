@@ -8,12 +8,20 @@
     "start": "next start",
     "lint": "eslint",
     "prebuild": "node scripts/verificar-imagenes.mjs",
-    "verificar:imagenes": "node scripts/verificar-imagenes.mjs"
+    "verificar:imagenes": "node scripts/verificar-imagenes.mjs",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "test": "vitest run",
+    "db:local": "node scripts/db-local.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
+    "@vercel/blob": "^2.8.0",
+    "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.41.0",
     "next": "16.3.4",
+    "postgres": "^3.4.9",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "^7.87.0",
@@ -21,13 +29,18 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@electric-sql/pglite-socket": "^0.2.11",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^22.20.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.23.13",
+    "typescript": "^5",
+    "vitest": "^5.0.0"
   }
 }

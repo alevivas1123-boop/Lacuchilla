@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { CartPage } from "@/components/cart/CartPage";
-import { getAvailableProductImages } from "@/lib/product-images.server";
 
 export const metadata: Metadata = {
   title: "Tu carrito",
@@ -10,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function CarritoPage() {
-  return <CartPage availableImages={getAvailableProductImages()} />;
+  return <CartPage />;
 }

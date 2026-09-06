@@ -3,13 +3,13 @@
 import { useMemo, useState } from "react";
 
 import { ProductCard } from "@/components/product/ProductCard";
-import { CATEGORIES } from "@/data/products";
+import { CATEGORIES } from "@/lib/categorias";
 import { cn } from "@/lib/cn";
-import type { Product, ProductCategory } from "@/lib/types";
+import type { Producto, ProductCategory } from "@/lib/types";
 
 type Filter = ProductCategory | "todos";
 
-export function Catalog({ products }: { products: Product[] }) {
+export function Catalog({ products }: { products: Producto[] }) {
   const [filter, setFilter] = useState<Filter>("todos");
 
   const visible = useMemo(

@@ -9,6 +9,8 @@ interface QuantityStepperProps {
   onChange: (value: number) => void;
   min?: number;
   max?: number;
+  /** Incremento por toque. Por defecto 1. */
+  step?: number;
   /** Texto para lectores de pantalla: "Cantidad de Mermelada de higo". */
   label: string;
   size?: "sm" | "md";
@@ -20,6 +22,7 @@ export function QuantityStepper({
   onChange,
   min = 1,
   max = 20,
+  step = 1,
   label,
   size = "md",
   className,
@@ -45,7 +48,7 @@ export function QuantityStepper({
       <button
         type="button"
         className={buttonClass}
-        onClick={() => onChange(Math.max(min, value - 1))}
+        onClick={() => onChange(Math.max(min, value - step))}
         disabled={value <= min}
         aria-label={`Quitar uno — ${label}`}
       >
@@ -60,7 +63,7 @@ export function QuantityStepper({
       <button
         type="button"
         className={buttonClass}
-        onClick={() => onChange(Math.min(max, value + 1))}
+        onClick={() => onChange(Math.min(max, value + step))}
         disabled={value >= max}
         aria-label={`Agregar uno — ${label}`}
       >

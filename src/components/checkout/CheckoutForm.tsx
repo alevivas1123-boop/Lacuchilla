@@ -7,6 +7,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
+import { revalidarCarrito } from "@/app/(tienda)/checkout/validar";
 import { CartSkeleton } from "@/components/cart/CartSkeleton";
 import { EmptyCart } from "@/components/cart/EmptyCart";
 import { Field, inputClass } from "@/components/checkout/Field";
@@ -36,6 +37,8 @@ export function CheckoutForm() {
   const items = useCartStore((state) => state.items);
   const hydrated = useCartStore((state) => state.hydrated);
   const clear = useCartStore((state) => state.clear);
+  const replaceAll = useCartStore((state) => state.replaceAll);
+  const [avisos, setAvisos] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const total = cartTotal(items);
 
@@ -62,12 +65,38 @@ export function CheckoutForm() {
   const fulfillment = useWatch({ control, name: "fulfillment" });
   const needsAddress = fulfillment === "envio";
 
-  function onSubmit(values: CheckoutFormValues) {
+  async function onSubmit(values: CheckoutFormValues) {
+    // Antes de confirmar se revalida el carrito contra la base: el precio, el
+    // rango de cantidades o la disponibilidad pudieron cambiar desde que la
+    // persona armó el pedido. No se confía en lo guardado en el navegador.
+    const revision = await revalidarCarrito(items);
+
+    if (revision.sinConexion) {
+      setAvisos([
+        "No pudimos confirmar los precios en este momento. Probá de nuevo en unos minutos.",
+      ]);
+      return;
+    }
+
+    if (revision.avisos.length > 0) {
+      // Se actualiza el carrito y se pide confirmar de nuevo, para que nadie
+      // termine comprando a un precio distinto del que vio.
+      replaceAll(revision.items);
+      setAvisos([...revision.avisos, "Revisá el pedido actualizado y confirmá otra vez."]);
+      return;
+    }
+
+    if (!revision.ok) {
+      setAvisos(["Los productos de tu pedido ya no están disponibles."]);
+      replaceAll([]);
+      return;
+    }
+
     const order: Order = {
       orderNumber: generateOrderNumber(),
       createdAt: new Date().toISOString(),
-      items,
-      total,
+      items: revision.items,
+      totalCents: revision.totalCents,
       customer: {
         fullName: values.fullName,
         phone: values.phone,
@@ -270,6 +299,20 @@ export function CheckoutForm() {
       </div>
 
       <div className="space-y-4 lg:sticky lg:top-24">
+        {avisos.length > 0 ? (
+          <div
+            role="alert"
+            className="rounded-card border-2 border-cheese/60 bg-cheese/10 p-4 text-sm leading-relaxed text-ink"
+          >
+            <p className="font-semibold">Tu pedido cambió</p>
+            <ul className="mt-1.5 list-disc space-y-1 pl-4">
+              {avisos.map((aviso) => (
+                <li key={aviso}>{aviso}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
         <OrderSummary items={items} total={total} />
 
         <div className="lg:hidden">

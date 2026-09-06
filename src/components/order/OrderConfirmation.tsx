@@ -98,7 +98,7 @@ export function OrderConfirmation() {
       </header>
 
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start [&>*]:min-w-0">
-        <OrderSummary items={order.items} total={order.total} title="Lo que pediste" />
+        <OrderSummary items={order.items} total={order.totalCents} title="Lo que pediste" />
 
         <div className="rounded-card border border-ink/10 bg-card p-5 sm:p-6">
           <h2 className="font-display text-xl font-semibold text-ink">Tus datos</h2>
