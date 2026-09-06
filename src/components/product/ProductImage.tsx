@@ -4,11 +4,15 @@ import { cn } from "@/lib/cn";
 import type { ProductCategory } from "@/lib/types";
 
 interface ProductImageProps {
-  slug: string;
+  /** Ruta de la foto dentro de /public. Si falta, se dibuja el placeholder. */
+  src?: string;
+  /** Texto alternativo descriptivo. */
+  alt?: string;
+  /** Nombre del producto (para el placeholder y como alt de respaldo). */
   name: string;
   category: ProductCategory;
-  /** true cuando existe /public/products/<slug>.webp (se resuelve en el servidor). */
-  hasImage?: boolean;
+  /** Cómo encaja la foto en el recuadro. */
+  fit?: "cover" | "contain";
   /** Ancho estimado de render, para que Next elija bien la imagen. */
   sizes?: string;
   priority?: boolean;
@@ -27,42 +31,44 @@ const placeholderTone: Record<ProductCategory, { from: string; to: string; accen
 };
 
 /**
- * Foto del producto con degradado a un placeholder de marca.
+ * Foto del producto dentro de un recuadro de proporción fija.
  *
- * Mientras no exista la foto real no se pide ninguna URL: se dibuja un
- * placeholder con el nombre del producto, así no hay imágenes rotas ni
- * errores 404 en consola. Para reemplazarlo alcanza con dejar el archivo
- * /public/products/<slug>.webp (ver PRODUCT_IMAGES.md).
+ * La foto nunca se deforma: el recuadro mantiene la relación 4:3 y la imagen
+ * se ajusta con object-fit sobre un fondo crema. Si el producto todavía no
+ * tiene foto se dibuja un placeholder de marca, así no hay imágenes rotas ni
+ * peticiones 404.
  */
 export function ProductImage({
-  slug,
+  src,
+  alt,
   name,
   category,
-  hasImage = false,
-  sizes = "(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw",
+  fit = "cover",
+  sizes = "(min-width: 1280px) 300px, (min-width: 1024px) 30vw, (min-width: 380px) 46vw, 92vw",
   priority = false,
   aspectClassName = "aspect-[4/3]",
   compact = false,
   className,
 }: ProductImageProps) {
-  const wrapper = cn("relative w-full overflow-hidden bg-cream-deep", aspectClassName, className);
+  const wrapper = cn("relative w-full overflow-hidden bg-cream", aspectClassName, className);
 
-  if (hasImage) {
+  if (src) {
     return (
       <div className={wrapper}>
         <Image
-          src={`/products/${slug}.webp`}
-          alt={name}
+          src={src}
+          alt={alt ?? name}
           fill
           sizes={sizes}
           priority={priority}
-          className="object-cover"
+          className={fit === "contain" ? "object-contain" : "object-cover"}
         />
       </div>
     );
   }
 
   const tone = placeholderTone[category];
+  const patternId = `patron-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
   return (
     <div className={wrapper}>
@@ -78,11 +84,11 @@ export function ProductImage({
         preserveAspectRatio="xMidYMid slice"
       >
         <defs>
-          <pattern id={`grid-${slug}`} width="12" height="12" patternUnits="userSpaceOnUse">
+          <pattern id={patternId} width="12" height="12" patternUnits="userSpaceOnUse">
             <circle cx="6" cy="6" r="1.4" fill={tone.accent} />
           </pattern>
         </defs>
-        <rect width="120" height="90" fill={`url(#grid-${slug})`} />
+        <rect width="120" height="90" fill={`url(#${patternId})`} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 p-3 text-center sm:gap-2 sm:p-4">
         <svg

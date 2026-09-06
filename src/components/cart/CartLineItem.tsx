@@ -4,6 +4,7 @@ import { Trash2 } from "lucide-react";
 
 import { ProductImage } from "@/components/product/ProductImage";
 import { QuantityStepper } from "@/components/product/QuantityStepper";
+import { getProductBySlug } from "@/data/products";
 import { MAX_QUANTITY, lineTotal, useCartStore } from "@/lib/cart-store";
 import { cn } from "@/lib/cn";
 import { formatPrice, formatQuantity, unitLabel } from "@/lib/format";
@@ -21,6 +22,9 @@ export function CartLineItem({ item, availableImages, variant = "drawer" }: Cart
   const setQuantity = useCartStore((state) => state.setQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const isPage = variant === "page";
+  // La foto y el texto alternativo se toman del catálogo, no de lo guardado en
+  // el navegador: así un carrito viejo sigue mostrando la imagen correcta.
+  const product = getProductBySlug(item.slug);
   const hasImage = availableImages.includes(item.slug);
 
   return (
@@ -32,10 +36,11 @@ export function CartLineItem({ item, availableImages, variant = "drawer" }: Cart
     >
       <div className={cn("shrink-0 overflow-hidden rounded-xl", isPage ? "w-24 sm:w-32" : "w-20")}>
         <ProductImage
-          slug={item.slug}
+          src={hasImage ? product?.image : undefined}
+          alt={product?.alt}
           name={item.name}
           category={item.category}
-          hasImage={hasImage}
+          fit={product?.imageFit}
           aspectClassName="aspect-square"
           compact
           sizes="128px"

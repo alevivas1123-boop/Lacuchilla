@@ -24,6 +24,8 @@ export const products: Product[] = [
   // ── Quesos ────────────────────────────────────────────────────────────────
   {
     slug: "queso-colonia",
+    image: "/products/queso-colonia.webp",
+    alt: "Queso Colonia de La Cuchilla",
     name: "Queso Colonia",
     category: "quesos",
     saleUnit: "kg",
@@ -35,6 +37,8 @@ export const products: Product[] = [
   },
   {
     slug: "queso-dambo",
+    image: "/products/queso-dambo.webp",
+    alt: "Queso Dambo de La Cuchilla",
     name: "Queso Dambo",
     category: "quesos",
     saleUnit: "kg",
@@ -46,6 +50,8 @@ export const products: Product[] = [
   },
   {
     slug: "queso-magro-con-sal",
+    image: "/products/queso-magro-con-sal.webp",
+    alt: "Queso magro con sal de La Cuchilla",
     name: "Queso magro con sal",
     category: "quesos",
     saleUnit: "kg",
@@ -56,6 +62,8 @@ export const products: Product[] = [
   },
   {
     slug: "queso-magro-sin-sal",
+    image: "/products/queso-magro-sin-sal.webp",
+    alt: "Queso magro sin sal de La Cuchilla",
     name: "Queso magro sin sal",
     category: "quesos",
     saleUnit: "kg",
@@ -67,6 +75,8 @@ export const products: Product[] = [
   },
   {
     slug: "queso-mozzarella",
+    image: "/products/queso-mozzarella.webp",
+    alt: "Queso mozzarella de La Cuchilla",
     name: "Queso mozzarella",
     category: "quesos",
     saleUnit: "kg",
@@ -77,6 +87,8 @@ export const products: Product[] = [
   },
   {
     slug: "queso-semiduro",
+    image: "/products/queso-semiduro.webp",
+    alt: "Queso semiduro de La Cuchilla",
     name: "Queso semiduro",
     category: "quesos",
     saleUnit: "kg",
@@ -87,6 +99,8 @@ export const products: Product[] = [
   },
   {
     slug: "queso-parmesano",
+    image: "/products/queso-parmesano.webp",
+    alt: "Queso parmesano de La Cuchilla",
     name: "Queso parmesano",
     category: "quesos",
     saleUnit: "kg",
@@ -98,6 +112,8 @@ export const products: Product[] = [
   },
   {
     slug: "queso-provolone",
+    image: "/products/queso-provolone.webp",
+    alt: "Queso provolone de La Cuchilla",
     name: "Queso provolone",
     category: "quesos",
     saleUnit: "kg",
@@ -108,6 +124,8 @@ export const products: Product[] = [
   },
   {
     slug: "queso-rallado",
+    image: "/products/queso-rallado.webp",
+    alt: "Queso rallado de La Cuchilla",
     name: "Queso rallado",
     category: "quesos",
     saleUnit: "kg",
@@ -118,6 +136,8 @@ export const products: Product[] = [
   },
   {
     slug: "queso-untable",
+    image: "/products/queso-untable.webp",
+    alt: "Queso untable de La Cuchilla en envase de 385 g",
     name: "Queso untable",
     category: "quesos",
     saleUnit: "unit",
@@ -129,6 +149,8 @@ export const products: Product[] = [
   // ── Mermeladas y dulces ───────────────────────────────────────────────────
   {
     slug: "mermelada-frutilla",
+    image: "/products/mermelada-frutilla.webp",
+    alt: "Mermelada artesanal de frutilla",
     name: "Mermelada de frutilla",
     category: "dulces",
     saleUnit: "unit",
@@ -138,6 +160,8 @@ export const products: Product[] = [
   },
   {
     slug: "mermelada-higo",
+    image: "/products/mermelada-higo.webp",
+    alt: "Mermelada artesanal de higo",
     name: "Mermelada de higo",
     category: "dulces",
     saleUnit: "unit",
@@ -147,6 +171,8 @@ export const products: Product[] = [
   },
   {
     slug: "mermelada-durazno",
+    image: "/products/mermelada-durazno.webp",
+    alt: "Mermelada artesanal de durazno",
     name: "Mermelada de durazno",
     category: "dulces",
     saleUnit: "unit",
@@ -156,6 +182,8 @@ export const products: Product[] = [
   },
   {
     slug: "dulce-membrillo",
+    image: "/products/dulce-membrillo.webp",
+    alt: "Dulce de membrillo artesanal",
     name: "Dulce de membrillo",
     category: "dulces",
     saleUnit: "unit",
@@ -165,6 +193,8 @@ export const products: Product[] = [
   },
   {
     slug: "dulce-de-leche",
+    image: "/products/dulce-de-leche.webp",
+    alt: "Dulce de leche de La Cuchilla",
     name: "Dulce de leche",
     category: "dulces",
     saleUnit: "unit",
@@ -176,6 +206,8 @@ export const products: Product[] = [
   // ── Otros ─────────────────────────────────────────────────────────────────
   {
     slug: "pizza-cuatro-quesos",
+    image: "/products/pizza-cuatro-quesos.webp",
+    alt: "Pizza artesanal de cuatro quesos",
     name: "Pizza cuatro quesos",
     category: "otros",
     saleUnit: "unit",
@@ -185,6 +217,8 @@ export const products: Product[] = [
   },
   {
     slug: "chorizo-chacarero",
+    image: "/products/chorizo-chacarero.webp",
+    alt: "Chorizo chacarero",
     name: "Chorizo chacarero",
     category: "otros",
     saleUnit: "kg",

@@ -12,7 +12,7 @@ export const contentType = "image/png";
 /** El sello se incrusta como data URI: se resuelve al construir el sitio. */
 function readLogoDataUri(): string | null {
   try {
-    const file = fs.readFileSync(path.join(process.cwd(), "public", "logo.png"));
+    const file = fs.readFileSync(path.join(process.cwd(), "public", "brand", "logo-la-cuchilla.png"));
     return `data:image/png;base64,${file.toString("base64")}`;
   } catch {
     return null;

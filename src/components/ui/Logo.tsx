@@ -49,8 +49,8 @@ export function Logo({
         style={{
           width: size,
           height: size,
-          maskImage: "url(/logo-mono.png)",
-          WebkitMaskImage: "url(/logo-mono.png)",
+          maskImage: "url(/brand/logo-la-cuchilla-mono.png)",
+          WebkitMaskImage: "url(/brand/logo-la-cuchilla-mono.png)",
           maskSize: "contain",
           WebkitMaskSize: "contain",
           maskRepeat: "no-repeat",
@@ -61,7 +61,7 @@ export function Logo({
       />
     ) : (
       <Image
-        src="/logo.png"
+        src="/brand/logo-la-cuchilla.png"
         alt={showWordmark ? "" : siteConfig.name}
         aria-hidden={showWordmark || undefined}
         width={size}

@@ -40,12 +40,12 @@ export function ProductCard({ product, priority = false }: { product: Product; p
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-card border border-ink/10 bg-card shadow-soft transition-shadow duration-200 hover:shadow-lifted">
       <ProductImage
-        slug={product.slug}
+        src={product.hasImage ? product.image : undefined}
+        alt={product.alt}
         name={product.name}
         category={product.category}
-        hasImage={product.hasImage}
+        fit={product.imageFit}
         priority={priority}
-        sizes="(min-width: 1280px) 300px, (min-width: 1024px) 30vw, (min-width: 380px) 46vw, 92vw"
       />
 
       <div className="flex flex-1 flex-col gap-2.5 p-3.5 sm:gap-3 sm:p-5">

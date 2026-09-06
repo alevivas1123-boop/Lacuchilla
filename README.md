@@ -62,8 +62,9 @@ npm start         # servir el build de producción
 ## Estructura
 
 ```
-brand/                       # originales de marca (no se publican)
-public/                      # logo, máscara y fotos de productos
+public/
+├── brand/                   # logo oficial y sus derivados
+└── products/                # 17 fotos de producto en WebP
 src/
 ├── app/                     # rutas del App Router
 │   ├── page.tsx             # / (home = tienda)
@@ -95,6 +96,8 @@ Todo vive en **`src/data/products.ts`**. Cada producto es un objeto tipado:
 ```ts
 {
   slug: "queso-colonia",       // único; también es el nombre de la foto
+  image: "/products/queso-colonia.webp",
+  alt: "Queso Colonia de La Cuchilla",
   name: "Queso Colonia",
   category: "quesos",          // "quesos" | "dulces" | "otros"
   saleUnit: "kg",              // "kg" (precio por kilo) | "unit" (por unidad)
@@ -122,35 +125,50 @@ publicar.
 
 ### Logo
 
-El sello oficial de La Cuchilla ya está integrado. Los archivos son:
+El sello oficial de La Cuchilla está integrado. Los archivos son:
 
 | Archivo | Para qué |
 | --- | --- |
-| `brand/logo-original.jpg` | Original tal cual llegó, sobre papel. Fuera de `public/`: no se publica, queda como respaldo. |
-| `public/logo.png` | Sello recortado, con **fondo transparente** y tinta en `#4A2E1E`. Es el que se ve en el header. |
-| `public/logo-mono.png` | Misma silueta a 320 px. Se usa como máscara CSS para pintar el sello de crema sobre el marrón del footer. |
+| `public/brand/logo-la-cuchilla.jpeg` | **Original oficial**, tal cual lo entregó el negocio. Es la fuente de verdad de la marca. |
+| `public/brand/logo-la-cuchilla.png` | Derivado del anterior con **fondo transparente** y tinta en `#4A2E1E`. Es el que se ve en el header. |
+| `public/brand/logo-la-cuchilla-mono.png` | Misma silueta a 320 px. Se usa como máscara CSS para pintar el sello de crema sobre el marrón del footer. |
 | `src/app/icon.svg` | Favicon: versión plana y simplificada del sello (cuña y cuchilla), pensada para leerse a 16 y 32 px. |
 
-El JPG original venía sobre papel texturado. Se le extrajo el fondo pasando la
-luminancia a canal alfa: el papel queda transparente, la tinta conserva su
-trama y el sello se puede apoyar sobre cualquier color de la paleta. Por eso
-en el footer aparece en crema sobre marrón sin ninguna chapa de fondo.
+Por qué hay derivados y no se usa el JPEG directo: el original está sobre papel
+texturado, así que sobre el crema del sitio se le nota el recuadro y sobre el
+marrón del footer aparece como un bloque claro. Los derivados se generan del
+**mismo archivo** pasando la luminancia del papel a canal alfa: el papel queda
+transparente y la tinta conserva su trama. El sello no se deforma ni se recorta
+—se mantiene cuadrado y completo—, solo se le quita el margen de papel en
+blanco que lo rodeaba.
 
 El sello incluye dibujado "Quesería La Cuchilla · Quesos con carácter", pero a
-44 px ese texto no se lee: por eso el header y el footer lo acompañan con el
+48 px ese texto no se lee: por eso el header y el footer lo acompañan con el
 nombre en tipografía. Si preferís mostrar solo la insignia, poné
 `LOGO_INCLUDES_WORDMARK = true` en `src/components/ui/Logo.tsx`.
 
-**Si cambia el logo**, reemplazá `public/logo.png` (PNG con transparencia,
-cuadrado, 1024 px) y `public/logo-mono.png` (la misma silueta a 320 px, el
-color no importa: solo se usa el canal alfa).
+**Si cambia el logo**, reemplazá `public/brand/logo-la-cuchilla.jpeg` y volvé a
+generar los dos PNG derivados a partir de él.
 
 ### Fotografías
 
+Los 17 productos ya tienen su foto en `public/products/`, en WebP.
+
+> ⚠️ **Son provisorias.** Vienen de Wikimedia Commons y no representan
+> necesariamente el producto real de La Cuchilla. Antes de abrir la tienda al
+> público hay que reemplazarlas por fotografías propias, o confirmar la
+> licencia y la atribución de cada archivo: buena parte del material de
+> Wikimedia exige atribuir al autor incluso en uso comercial.
+
 Ver **[`PRODUCT_IMAGES.md`](./PRODUCT_IMAGES.md)**: nombres exactos de archivo,
-tamaño recomendado (1200 × 900 px, WebP, 4:3) y cómo optimizar. Mientras no
-existan las fotos, la web muestra placeholders de marca y **sigue funcionando
-sin imágenes rotas**.
+qué revisar de cada foto antes de publicar, especificaciones y cómo optimizar.
+Si en algún momento falta una foto, la web no se rompe: muestra un placeholder
+de marca y **sigue funcionando sin imágenes rotas**.
+
+Las fotos tienen proporciones muy distintas entre sí y aun así la grilla se ve
+pareja: el recuadro de la tarjeta mantiene 4:3 y la foto se ajusta con
+`object-fit: cover` sobre fondo crema, sin deformarse nunca. Si alguna quedara
+mal recortada, se le pone `imageFit: "contain"` en `src/data/products.ts`.
 
 ## Desplegar en Vercel
 

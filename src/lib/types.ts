@@ -13,6 +13,16 @@ export interface Product {
   price: number;
   /** Cómo se presenta el producto. Ej: "Venta por kilo", "Frasco de 380 g". */
   presentation: string;
+  /** Ruta de la foto dentro de /public. Ej: "/products/queso-colonia.webp". */
+  image: string;
+  /** Texto alternativo descriptivo de la foto. */
+  alt: string;
+  /**
+   * Cómo encaja la foto en el recuadro 4:3 de la tarjeta.
+   * "cover" (por defecto) llena el recuadro; "contain" muestra la foto
+   * entera sobre fondo crema, para las que quedarían mal recortadas.
+   */
+  imageFit?: "cover" | "contain";
   description: string;
   /** Opciones del selector. En kg: [1,2,3,4,5]. En unidad: no aplica. */
   weightOptions?: number[];
