@@ -13,7 +13,8 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "test": "vitest run",
-    "db:local": "node scripts/db-local.mjs"
+    "db:local": "node scripts/db-local.mjs",
+    "db:sql": "tsx scripts/generar-sql-inicial.ts > drizzle/setup-completo.sql"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

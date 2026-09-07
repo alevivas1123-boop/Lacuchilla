@@ -134,6 +134,20 @@ imagen y orden. Usa `ON CONFLICT (slug) DO NOTHING`:
 `src/data/seed-products.ts` dejó de ser la fuente de verdad. Editarlo no cambia
 la tienda; sirve solo para sembrar una base vacía.
 
+### Sin terminal a mano
+
+`drizzle/setup-completo.sql` tiene todo en un solo archivo: la estructura, los
+17 productos y el registro que Drizzle usa para saber que la migración ya se
+aplicó. Se pega entero en el **editor SQL de Neon** y se ejecuta una vez.
+
+Sirve cuando no hay una terminal disponible —por ejemplo, desde el celular— y
+es equivalente a correr `db:migrate` + `db:seed`. Se puede ejecutar más de una
+vez sin duplicar nada, y después `npm run db:migrate` reconoce la migración
+como aplicada en lugar de intentar crear la tabla de nuevo.
+
+Se regenera con `npm run db:sql` cada vez que cambie el esquema o el catálogo
+inicial.
+
 ### Base local para desarrollo
 
 Sin cuenta de Neon, en dos terminales:
