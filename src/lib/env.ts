@@ -31,9 +31,32 @@ export const env = {
   adminUsername: () => requerida("ADMIN_USERNAME"),
   adminPassword: () => requerida("ADMIN_PASSWORD"),
   adminSessionSecret: () => requerida("ADMIN_SESSION_SECRET"),
-  /** Lo inyecta Vercel Blob automáticamente al conectar el almacenamiento. */
-  blobToken: () => requerida("BLOB_READ_WRITE_TOKEN"),
 };
+
+/**
+ * Credenciales para escribir en Vercel Blob.
+ *
+ * Se aceptan las dos formas que existen hoy, en este orden:
+ *
+ * 1. `BLOB_READ_WRITE_TOKEN`: el token estático. Es el único que sirve para
+ *    desarrollo local.
+ * 2. OIDC (`VERCEL_OIDC_TOKEN` + `BLOB_STORE_ID`): lo que usan los stores
+ *    creados últimamente, que ya no emiten token estático. Vercel inyecta el
+ *    token OIDC en cada despliegue y lo rota solo, así que no hay ningún
+ *    secreto que guardar ni que rotar a mano.
+ */
+export type CredencialesBlob = { token: string } | { oidcToken: string; storeId: string };
+
+export function credencialesBlob(): CredencialesBlob {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (token && token.trim() !== "") return { token };
+
+  const oidcToken = process.env.VERCEL_OIDC_TOKEN;
+  const storeId = process.env.BLOB_STORE_ID;
+  if (oidcToken?.trim() && storeId?.trim()) return { oidcToken, storeId };
+
+  throw new ConfiguracionFaltante("BLOB_READ_WRITE_TOKEN");
+}
 
 export const esProduccion = process.env.NODE_ENV === "production";
 

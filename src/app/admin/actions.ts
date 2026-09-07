@@ -14,7 +14,7 @@ import {
 } from "@/db/queries";
 import { cerrarSesion, credencialesValidas, iniciarSesion, requerirSesion } from "@/lib/admin-session";
 import { TAG_CATALOGO } from "@/lib/catalogo.server";
-import { env } from "@/lib/env";
+import { credencialesBlob, type CredencialesBlob } from "@/lib/env";
 import { rutaEnBlob, validarImagen } from "@/lib/imagenes";
 import { productoSchema } from "@/lib/product-schema";
 import type { EstadoFormulario } from "@/lib/admin-form-state";
@@ -104,11 +104,18 @@ async function subirImagen(
   const revision = validarImagen(archivo.name, archivo.size, bytes);
   if (!revision.ok) return { error: revision.error! };
 
+  let credenciales: CredencialesBlob;
+  try {
+    credenciales = credencialesBlob();
+  } catch {
+    return { error: "El almacenamiento de imágenes no está configurado en este entorno." };
+  }
+
   try {
     const ruta = rutaEnBlob(slug, revision.extension!);
     const subida = await put(ruta, archivo, {
       access: "public",
-      token: env.blobToken(),
+      ...credenciales,
       contentType: revision.tipo,
       // El nombre ya lleva azar propio; no hace falta que Blob agregue más.
       addRandomSuffix: false,

@@ -215,7 +215,7 @@ navegador. `.env.example` tiene la lista con valores ficticios.
 | `ADMIN_USERNAME` | Usuario del panel. | No, pero no la publiques |
 | `ADMIN_PASSWORD` | Contraseña del panel. | **Sí** |
 | `ADMIN_SESSION_SECRET` | Firma la cookie de sesión. Generala con `openssl rand -base64 48`. | **Sí** |
-| `BLOB_READ_WRITE_TOKEN` | Escritura en Vercel Blob. La inyecta Vercel al conectar el almacenamiento. | **Sí** |
+| `BLOB_READ_WRITE_TOKEN` | Escritura en Vercel Blob. Solo hace falta en desarrollo local: en Vercel se usa OIDC. | **Sí** |
 
 Si falta alguna, el panel **no** entra en un modo permisivo: la pantalla de
 login avisa cuáles faltan (sin mostrar ningún valor) y no deja pasar a nadie.
@@ -235,10 +235,24 @@ login avisa cuáles faltan (sin mostrar ningún valor) y no deja pasar a nadie.
 ### Configurar Vercel Blob
 
 1. **Storage → Create → Blob**, conectado al mismo proyecto.
-2. Vercel crea `BLOB_READ_WRITE_TOKEN` automáticamente.
-3. Sin esa variable el panel funciona igual, pero **subir imágenes falla** con
-   un mensaje claro. Las fotos del seed, que están en `/public`, se siguen
-   viendo.
+2. Vercel inyecta `BLOB_STORE_ID` y, en cada despliegue, `VERCEL_OIDC_TOKEN`.
+
+La subida acepta dos formas de autenticación y elige la primera disponible:
+
+| Forma | Variables | Dónde sirve |
+| --- | --- | --- |
+| Token estático | `BLOB_READ_WRITE_TOKEN` | Desarrollo local. |
+| OIDC | `VERCEL_OIDC_TOKEN` + `BLOB_STORE_ID` | Despliegues en Vercel. |
+
+Los stores de Blob creados últimamente **ya no emiten un token estático**: usan
+OIDC, que Vercel inyecta y rota solo. No hay secreto que guardar ni rotar. El
+token estático sigue soportado y tiene prioridad si está definido, porque OIDC
+no está habilitado para el entorno `development` y es la única manera de probar
+la subida desde la máquina de uno.
+
+Sin ninguna de las dos el panel funciona igual, pero **subir imágenes falla**
+con un mensaje claro. Las fotos del seed, que están en `/public`, se siguen
+viendo.
 
 ---
 
