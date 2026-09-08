@@ -242,7 +242,10 @@ La subida acepta dos formas de autenticación y elige la primera disponible:
 | Forma | Variables | Dónde sirve |
 | --- | --- | --- |
 | Token estático | `BLOB_READ_WRITE_TOKEN` | Desarrollo local. |
-| OIDC | `VERCEL_OIDC_TOKEN` + `BLOB_STORE_ID` | Despliegues en Vercel. |
+| OIDC | `BLOB_STORE_ID` | Despliegues en Vercel. |
+
+Con OIDC no hay ninguna variable con el token: `@vercel/blob` se lo pide a la
+plataforma en cada despliegue y lo renueva cuando vence.
 
 Los stores de Blob creados últimamente **ya no emiten un token estático**: usan
 OIDC, que Vercel inyecta y rota solo. No hay secreto que guardar ni rotar. El

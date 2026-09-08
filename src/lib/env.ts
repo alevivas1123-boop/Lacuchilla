@@ -40,20 +40,20 @@ export const env = {
  *
  * 1. `BLOB_READ_WRITE_TOKEN`: el token estático. Es el único que sirve para
  *    desarrollo local.
- * 2. OIDC (`VERCEL_OIDC_TOKEN` + `BLOB_STORE_ID`): lo que usan los stores
- *    creados últimamente, que ya no emiten token estático. Vercel inyecta el
- *    token OIDC en cada despliegue y lo rota solo, así que no hay ningún
+ * 2. OIDC, indicando solo `BLOB_STORE_ID`: lo que usan los stores creados
+ *    últimamente, que ya no emiten token estático. El token no se lee de una
+ *    variable de entorno —en Vercel no existe como tal—: lo pide `@vercel/blob`
+ *    por su cuenta a la plataforma y lo renueva cuando vence. No hay ningún
  *    secreto que guardar ni que rotar a mano.
  */
-export type CredencialesBlob = { token: string } | { oidcToken: string; storeId: string };
+export type CredencialesBlob = { token: string } | { storeId: string };
 
 export function credencialesBlob(): CredencialesBlob {
   const token = process.env.BLOB_READ_WRITE_TOKEN;
   if (token && token.trim() !== "") return { token };
 
-  const oidcToken = process.env.VERCEL_OIDC_TOKEN;
   const storeId = process.env.BLOB_STORE_ID;
-  if (oidcToken?.trim() && storeId?.trim()) return { oidcToken, storeId };
+  if (storeId?.trim()) return { storeId };
 
   throw new ConfiguracionFaltante("BLOB_READ_WRITE_TOKEN");
 }
