@@ -121,7 +121,14 @@ async function subirImagen(
       addRandomSuffix: false,
     });
     return { url: subida.url, path: subida.pathname };
-  } catch {
+  } catch (error) {
+    // A quien sube la foto se le da un mensaje genérico, pero el motivo real
+    // queda en los registros del servidor: sin esto, diagnosticar una falla de
+    // credenciales o de red contra Blob es adivinar.
+    console.error(
+      "Falló la subida a Vercel Blob:",
+      error instanceof Error ? error.message : error,
+    );
     return { error: "No se pudo subir la imagen. Probá de nuevo." };
   }
 }
