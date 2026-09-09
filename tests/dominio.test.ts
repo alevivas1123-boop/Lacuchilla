@@ -117,7 +117,7 @@ describe("validación del producto", () => {
     active: true,
   };
 
-  it("acepta un producto correcto y convierte el precio a centésimos", () => {
+  it("acepta un producto correcto y deja el precio como entero en pesos", () => {
     const resultado = productoSchema.safeParse(base);
     expect(resultado.success).toBe(true);
     if (resultado.success) expect(resultado.data.price).toBe(390);

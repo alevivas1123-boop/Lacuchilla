@@ -1,7 +1,7 @@
 import { formatearPesos } from "@/lib/money";
 import type { SaleType } from "@/lib/types";
 
-/** Precio en pesos uruguayos a partir de centésimos. Ej: 117000 -> "$1.170". */
+/** Precio en pesos uruguayos enteros. Ej: 1170 -> "$1.170". */
 export const formatPrice = formatearPesos;
 
 /** "3 kg" o "2 unidades", según cómo se venda el producto. */

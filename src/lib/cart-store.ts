@@ -139,7 +139,7 @@ export const useCartStore = create<CartState>()(
   ),
 );
 
-/** Subtotal de una línea, en centésimos. */
+/** Subtotal de una línea, en pesos enteros. */
 export function lineTotal(item: CartItem): number {
   return item.unitPrice * item.quantity;
 }
