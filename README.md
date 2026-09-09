@@ -54,9 +54,11 @@ catálogo, carrito y checkout sin registro.
 | Formularios | React Hook Form + Zod |
 | Iconos | lucide-react |
 | Tipografías | Fraunces (títulos) e Inter (texto), vía `next/font` |
-| Datos | archivo local tipado: `src/data/products.ts` |
+| Base de datos | PostgreSQL (Neon) con Drizzle ORM |
+| Imágenes nuevas | Vercel Blob |
 
-Sin base de datos, sin backend, sin autenticación y sin pasarelas de pago.
+Sin pasarelas de pago todavía. El catálogo vive en PostgreSQL y se administra
+desde **[`/admin`](./docs/admin-productos.md)**.
 
 ## Puesta en marcha
 
@@ -64,7 +66,11 @@ Requisitos: **Node.js 20 o superior** y npm.
 
 ```bash
 npm install               # instalar dependencias
+npm run db:local          # PostgreSQL local para desarrollo (otra terminal)
+npm run db:migrate        # aplicar migraciones
+npm run db:seed           # sembrar el catálogo inicial
 npm run dev               # desarrollo -> http://localhost:3000
+npm test                  # pruebas
 npm run lint              # ESLint
 npm run build             # build de producción
 npm start                 # servir el build de producción
@@ -103,7 +109,12 @@ src/
 
 ### Productos y precios
 
-Todo vive en **`src/data/products.ts`**. Cada producto es un objeto tipado:
+Se administran desde el panel en **`/admin`**, sin tocar código. Ver
+[`docs/admin-productos.md`](./docs/admin-productos.md).
+
+`src/data/seed-products.ts` conserva el catálogo original, pero **solo se usa
+para sembrar una base vacía**: editarlo ya no cambia la tienda. Cada producto
+del seed se ve así:
 
 ```ts
 {

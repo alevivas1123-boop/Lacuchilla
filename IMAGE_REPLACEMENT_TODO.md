@@ -62,23 +62,23 @@ contenido y **no deberían mostrarse ni en una demo pública**.
 
 | Archivo | Producto | Dimensiones | Peso | md5 | Estado |
 | --- | --- | --- | --- | --- | --- |
-| `/products/queso-semiduro.webp` | Queso semiduro | 684 × 800 | 27 KB | `b0441783` | 🔴 Bloqueante |
-| `/products/queso-magro-con-sal.webp` | Queso magro con sal | 1200 × 799 | 85 KB | `45df4640` | 🔴 Bloqueante |
-| `/products/queso-magro-sin-sal.webp` | Queso magro sin sal | 1200 × 799 | 85 KB | `45df4640` | 🔴 Bloqueante |
-| `/products/mermelada-durazno.webp` | Mermelada de durazno | 1200 × 675 | 57 KB | `a6548fe2` | 🔴 Bloqueante |
-| `/products/queso-colonia.webp` | Queso Colonia | 900 × 1200 | 72 KB | `0c702efd` | 🟡 Licencia |
-| `/products/queso-dambo.webp` | Queso Dambo | 1024 × 768 | 41 KB | `8a29e417` | 🟡 Licencia |
-| `/products/queso-mozzarella.webp` | Queso mozzarella | 1024 × 768 | 30 KB | `c9f87951` | 🟡 Licencia |
-| `/products/queso-parmesano.webp` | Queso parmesano | 1200 × 943 | 111 KB | `1b48f934` | 🟡 Licencia |
-| `/products/queso-provolone.webp` | Queso provolone | 800 × 600 | 29 KB | `bf5db002` | 🟡 Licencia |
-| `/products/queso-rallado.webp` | Queso rallado | 1200 × 800 | 162 KB | `981cec8e` | 🟡 Licencia |
-| `/products/queso-untable.webp` | Queso untable | 1200 × 900 | 77 KB | `06bf1a11` | 🟡 Licencia |
-| `/products/mermelada-frutilla.webp` | Mermelada de frutilla | 1200 × 508 | 64 KB | `a3e7016a` | 🟡 Licencia |
-| `/products/mermelada-higo.webp` | Mermelada de higo | 684 × 1066 | 63 KB | `8dfbf256` | 🟡 Licencia |
-| `/products/dulce-membrillo.webp` | Dulce de membrillo | 1200 × 741 | 67 KB | `fbcc83f0` | 🟡 Licencia |
-| `/products/dulce-de-leche.webp` | Dulce de leche | 940 × 609 | 25 KB | `4a5dae27` | 🟡 Licencia |
-| `/products/pizza-cuatro-quesos.webp` | Pizza cuatro quesos | 1200 × 675 | 112 KB | `fe9a222f` | 🟡 Licencia |
-| `/products/chorizo-chacarero.webp` | Chorizo chacarero | 1200 × 900 | 101 KB | `ae47528c` | 🟡 Licencia |
+| `/products/queso-semiduro.webp` | Queso semiduro | 684 × 800 | 20 KB | `c3fba89d` | 🔴 Bloqueante |
+| `/products/queso-magro-con-sal.webp` | Queso magro con sal | 1280 × 852 | 74 KB | `e131eb6b` | 🔴 Bloqueante |
+| `/products/queso-magro-sin-sal.webp` | Queso magro sin sal | 1280 × 852 | 74 KB | `e131eb6b` | 🔴 Bloqueante |
+| `/products/mermelada-durazno.webp` | Mermelada de durazno | 1280 × 720 | 49 KB | `a4bbb225` | 🔴 Bloqueante |
+| `/products/queso-colonia.webp` | Queso Colonia | 1050 × 1400 | 23 KB | `5bc47dd2` | 🟡 Licencia |
+| `/products/queso-dambo.webp` | Queso Dambo | 1024 × 768 | 31 KB | `7262448a` | 🟡 Licencia |
+| `/products/queso-mozzarella.webp` | Queso mozzarella | 1024 × 768 | 22 KB | `2630d58b` | 🟡 Licencia |
+| `/products/queso-parmesano.webp` | Queso parmesano | 1280 × 1006 | 97 KB | `a94718e0` | 🟡 Licencia |
+| `/products/queso-provolone.webp` | Queso provolone | 800 × 600 | 19 KB | `b3c0bc8f` | 🟡 Licencia |
+| `/products/queso-rallado.webp` | Queso rallado | 1280 × 853 | 150 KB | `0a23ba09` | 🟡 Licencia |
+| `/products/queso-untable.webp` | Queso untable | 1280 × 960 | 68 KB | `ab22c812` | 🟡 Licencia |
+| `/products/mermelada-frutilla.webp` | Mermelada de frutilla | 1280 × 542 | 57 KB | `05392cd3` | 🟡 Licencia |
+| `/products/mermelada-higo.webp` | Mermelada de higo | 684 × 1066 | 47 KB | `5d1ec649` | 🟡 Licencia |
+| `/products/dulce-membrillo.webp` | Dulce de membrillo | 1280 × 790 | 56 KB | `7b607812` | 🟡 Licencia |
+| `/products/dulce-de-leche.webp` | Dulce de leche | 940 × 609 | 20 KB | `f0ed3cab` | 🟡 Licencia |
+| `/products/pizza-cuatro-quesos.webp` | Pizza cuatro quesos | 1280 × 720 | 97 KB | `d3a1c6e1` | 🟡 Licencia |
+| `/products/chorizo-chacarero.webp` | Chorizo chacarero | 1280 × 960 | 85 KB | `8615653c` | 🟡 Licencia |
 | `/hero.webp` | Portada (hero) | 1600 × 1200 | 131 KB | `ddea56b0` | 🟡 Licencia |
 
 **Total: 18 imágenes** — 4 bloqueantes, 14 con la licencia sin verificar.

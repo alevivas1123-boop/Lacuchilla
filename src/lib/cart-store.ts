@@ -3,38 +3,54 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-import type { CartItem, Product } from "@/lib/types";
-
-/** Tope por línea para evitar pedidos accidentales de 999 kg. */
-export const MAX_QUANTITY = 20;
+import { ajustarCantidad, type CartItem, type Producto } from "@/lib/types";
 
 interface CartState {
   items: CartItem[];
   /** true cuando zustand terminó de leer localStorage (evita mismatch de hidratación). */
   hydrated: boolean;
   setHydrated: () => void;
-  addItem: (product: Product, quantity: number) => void;
+  addItem: (product: Producto, quantity: number) => void;
   setQuantity: (id: string, quantity: number) => void;
   increment: (id: string) => void;
   decrement: (id: string) => void;
   removeItem: (id: string) => void;
   clear: () => void;
+  /** Reemplaza el carrito por una versión revalidada contra la base. */
+  replaceAll: (items: CartItem[]) => void;
 }
 
-function toCartItem(product: Product, quantity: number): CartItem {
+function aLineaDeCarrito(product: Producto, quantity: number): CartItem {
   return {
     id: product.slug,
     slug: product.slug,
     name: product.name,
     category: product.category,
-    saleUnit: product.saleUnit,
+    saleType: product.saleType,
+    unitLabel: product.unitLabel,
     presentation: product.presentation,
     unitPrice: product.price,
-    quantity,
+    quantity: ajustarCantidad(quantity, product),
+    minQuantity: product.minQuantity,
+    maxQuantity: product.maxQuantity,
+    quantityStep: product.quantityStep,
+    imageUrl: product.imageUrl,
   };
 }
 
-const clamp = (value: number) => Math.min(MAX_QUANTITY, Math.max(1, Math.round(value)));
+/**
+ * La cantidad de cada línea se ajusta al rango del producto, no a un tope
+ * global: un queso va de 1 a 5 kg y un frasco puede llegar a 20 unidades.
+ * La configuración viaja en la línea y se vuelve a validar contra la base
+ * antes de confirmar el pedido.
+ */
+function limitesDeLinea(item: CartItem) {
+  return {
+    minQuantity: item.minQuantity ?? 1,
+    maxQuantity: item.maxQuantity ?? 99,
+    quantityStep: item.quantityStep ?? 1,
+  };
+}
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -45,37 +61,53 @@ export const useCartStore = create<CartState>()(
 
       addItem: (product, quantity) =>
         set((state) => {
-          const existing = state.items.find((item) => item.id === product.slug);
-          if (existing) {
+          const existente = state.items.find((item) => item.id === product.slug);
+          if (existente) {
             return {
               items: state.items.map((item) =>
                 item.id === product.slug
-                  ? { ...item, quantity: clamp(item.quantity + quantity) }
+                  ? { ...item, quantity: ajustarCantidad(item.quantity + quantity, product) }
                   : item,
               ),
             };
           }
-          return { items: [...state.items, toCartItem(product, clamp(quantity))] };
+          return { items: [...state.items, aLineaDeCarrito(product, quantity)] };
         }),
 
       setQuantity: (id, quantity) =>
         set((state) => ({
           items: state.items.map((item) =>
-            item.id === id ? { ...item, quantity: clamp(quantity) } : item,
+            item.id === id ? { ...item, quantity: ajustarCantidad(quantity, limitesDeLinea(item)) } : item,
           ),
         })),
 
       increment: (id) =>
         set((state) => ({
           items: state.items.map((item) =>
-            item.id === id ? { ...item, quantity: clamp(item.quantity + 1) } : item,
+            item.id === id
+              ? {
+                  ...item,
+                  quantity: ajustarCantidad(
+                    item.quantity + (item.quantityStep ?? 1),
+                    limitesDeLinea(item),
+                  ),
+                }
+              : item,
           ),
         })),
 
       decrement: (id) =>
         set((state) => ({
           items: state.items.map((item) =>
-            item.id === id ? { ...item, quantity: clamp(item.quantity - 1) } : item,
+            item.id === id
+              ? {
+                  ...item,
+                  quantity: ajustarCantidad(
+                    item.quantity - (item.quantityStep ?? 1),
+                    limitesDeLinea(item),
+                  ),
+                }
+              : item,
           ),
         })),
 
@@ -83,19 +115,31 @@ export const useCartStore = create<CartState>()(
         set((state) => ({ items: state.items.filter((item) => item.id !== id) })),
 
       clear: () => set({ items: [] }),
+
+      replaceAll: (items) => set({ items }),
     }),
     {
       name: "la-cuchilla:cart",
-      version: 1,
+      // v3: las líneas guardan su propia configuración de cantidades y el
+      // precio es un entero en pesos.
+      version: 3,
       storage: createJSONStorage(() => localStorage),
-      // Solo se persisten las líneas; `hydrated` es estado de runtime.
       partialize: (state) => ({ items: state.items }),
+      migrate: (estado, versionPrevia) => {
+        const guardado = estado as { items?: unknown[] } | undefined;
+        if (!guardado?.items) return { items: [] };
+        if (versionPrevia >= 3) return guardado as { items: CartItem[] };
+        // Un carrito viejo tiene precios en pesos y no conoce los límites.
+        // Se descarta: reconstruirlo mal sería peor que pedirle al cliente que
+        // vuelva a elegir, y los datos correctos están a un clic.
+        return { items: [] };
+      },
       onRehydrateStorage: () => (state) => state?.setHydrated(),
     },
   ),
 );
 
-/** Subtotal de una línea: precio por kilo/unidad × cantidad. */
+/** Subtotal de una línea, en centésimos. */
 export function lineTotal(item: CartItem): number {
   return item.unitPrice * item.quantity;
 }

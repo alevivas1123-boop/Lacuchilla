@@ -1,6 +1,6 @@
 import { siteConfig } from "@/config/site";
 import { lineTotal } from "@/lib/cart-store";
-import { formatPrice, formatQuantity, unitLabel } from "@/lib/format";
+import { formatPrice, formatQuantity, unitLabelText } from "@/lib/format";
 import type { CartItem } from "@/lib/types";
 
 interface OrderSummaryProps {
@@ -27,11 +27,11 @@ export function OrderSummary({
             <div className="min-w-0">
               <p className="font-medium text-ink">{item.name}</p>
               <p className="text-sm text-bark">
-                {item.saleUnit === "kg"
-                  ? formatQuantity(item.quantity, "kg")
-                  : `${formatQuantity(item.quantity, "unit")} · ${item.presentation}`}
+                {item.saleType === "weight"
+                  ? formatQuantity(item.quantity, item.unitLabel)
+                  : `${formatQuantity(item.quantity, item.unitLabel)} · ${item.presentation}`}
                 {" · "}
-                {formatPrice(item.unitPrice)} {unitLabel(item.saleUnit)}
+                {formatPrice(item.unitPrice)} {unitLabelText(item.unitLabel)}
               </p>
             </div>
             <p className="shrink-0 font-semibold text-ink tabular-nums">

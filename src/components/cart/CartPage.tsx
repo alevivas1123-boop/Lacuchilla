@@ -11,7 +11,7 @@ import { siteConfig } from "@/config/site";
 import { cartTotal, useCartStore } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/format";
 
-export function CartPage({ availableImages }: { availableImages: string[] }) {
+export function CartPage() {
   const items = useCartStore((state) => state.items);
   const hydrated = useCartStore((state) => state.hydrated);
   const total = cartTotal(items);
@@ -41,12 +41,7 @@ export function CartPage({ availableImages }: { availableImages: string[] }) {
           <section aria-label="Productos del pedido" className="rounded-card border border-ink/10 bg-card px-4 sm:px-6">
             <ul className="divide-y divide-ink/10">
               {items.map((item) => (
-                <CartLineItem
-                  key={item.id}
-                  item={item}
-                  availableImages={availableImages}
-                  variant="page"
-                />
+                <CartLineItem key={item.id} item={item} variant="page" />
               ))}
             </ul>
           </section>

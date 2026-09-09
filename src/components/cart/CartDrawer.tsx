@@ -12,7 +12,7 @@ import { cartTotal, useCartStore } from "@/lib/cart-store";
 import { useCartUI } from "@/lib/cart-ui-store";
 import { formatPrice } from "@/lib/format";
 
-export function CartDrawer({ availableImages }: { availableImages: string[] }) {
+export function CartDrawer() {
   const isOpen = useCartUI((state) => state.isOpen);
   const closeCart = useCartUI((state) => state.closeCart);
   const items = useCartStore((state) => state.items);
@@ -90,7 +90,7 @@ export function CartDrawer({ availableImages }: { availableImages: string[] }) {
           <>
             <ul className="flex-1 divide-y divide-ink/10 overflow-y-auto px-5">
               {items.map((item) => (
-                <CartLineItem key={item.id} item={item} availableImages={availableImages} />
+                <CartLineItem key={item.id} item={item} />
               ))}
             </ul>
 

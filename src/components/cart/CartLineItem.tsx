@@ -4,28 +4,21 @@ import { Trash2 } from "lucide-react";
 
 import { ProductImage } from "@/components/product/ProductImage";
 import { QuantityStepper } from "@/components/product/QuantityStepper";
-import { getProductBySlug } from "@/data/products";
-import { MAX_QUANTITY, lineTotal, useCartStore } from "@/lib/cart-store";
+import { lineTotal, useCartStore } from "@/lib/cart-store";
 import { cn } from "@/lib/cn";
-import { formatPrice, formatQuantity, unitLabel } from "@/lib/format";
+import { formatPrice, formatQuantity, unitLabelText } from "@/lib/format";
 import type { CartItem } from "@/lib/types";
 
 interface CartLineItemProps {
   item: CartItem;
-  /** Slugs con foto real disponible. */
-  availableImages: string[];
   /** "drawer" es la versión compacta del carrito lateral. */
   variant?: "drawer" | "page";
 }
 
-export function CartLineItem({ item, availableImages, variant = "drawer" }: CartLineItemProps) {
+export function CartLineItem({ item, variant = "drawer" }: CartLineItemProps) {
   const setQuantity = useCartStore((state) => state.setQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const isPage = variant === "page";
-  // La foto y el texto alternativo se toman del catálogo, no de lo guardado en
-  // el navegador: así un carrito viejo sigue mostrando la imagen correcta.
-  const product = getProductBySlug(item.slug);
-  const hasImage = availableImages.includes(item.slug);
 
   return (
     <li
@@ -36,11 +29,10 @@ export function CartLineItem({ item, availableImages, variant = "drawer" }: Cart
     >
       <div className={cn("shrink-0 overflow-hidden rounded-xl", isPage ? "w-24 sm:w-32" : "w-20")}>
         <ProductImage
-          src={hasImage ? product?.image : undefined}
-          alt={product?.alt}
+          src={item.imageUrl ?? undefined}
+          alt={item.name}
           name={item.name}
           category={item.category}
-          fit={product?.imageFit}
           aspectClassName="aspect-square"
           compact
           sizes="128px"
@@ -59,10 +51,12 @@ export function CartLineItem({ item, availableImages, variant = "drawer" }: Cart
               {item.name}
             </h3>
             <p className="mt-0.5 text-sm text-bark">
-              {item.saleUnit === "kg" ? formatQuantity(item.quantity, "kg") : item.presentation}
+              {item.saleType === "weight"
+                ? formatQuantity(item.quantity, item.unitLabel)
+                : item.presentation}
             </p>
             <p className="text-sm text-bark/80">
-              {formatPrice(item.unitPrice)} {unitLabel(item.saleUnit)}
+              {formatPrice(item.unitPrice)} {unitLabelText(item.unitLabel)}
             </p>
           </div>
 
@@ -80,11 +74,13 @@ export function CartLineItem({ item, availableImages, variant = "drawer" }: Cart
           <QuantityStepper
             value={item.quantity}
             onChange={(value) => setQuantity(item.id, value)}
-            max={MAX_QUANTITY}
+            min={item.minQuantity ?? 1}
+            max={item.maxQuantity ?? 99}
+            step={item.quantityStep ?? 1}
             size={isPage ? "md" : "sm"}
             label={
-              item.saleUnit === "kg"
-                ? `Kilos de ${item.name}`
+              item.saleType === "weight"
+                ? `${item.unitLabel} de ${item.name}`
                 : `Unidades de ${item.name}`
             }
           />

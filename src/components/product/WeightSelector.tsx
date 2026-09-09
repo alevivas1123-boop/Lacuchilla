@@ -8,6 +8,8 @@ interface WeightSelectorProps {
   onChange: (value: number) => void;
   /** Nombre del producto, para describir el grupo a lectores de pantalla. */
   productName: string;
+  /** Cómo se llama la unidad: "kg", "unidad", "frasco". */
+  unitLabel: string;
 }
 
 /** Selector de kilos con forma de control segmentado (un toque, sin desplegables). */
@@ -16,6 +18,7 @@ export function WeightSelector({
   value,
   onChange,
   productName,
+  unitLabel,
 }: WeightSelectorProps) {
   return (
     <div
@@ -31,7 +34,7 @@ export function WeightSelector({
             type="button"
             role="radio"
             aria-checked={selected}
-            aria-label={`${option} kg`}
+            aria-label={`${option} ${unitLabel}`}
             onClick={() => onChange(option)}
             className={cn(
               "min-h-11 rounded-lg border-2 text-sm font-semibold transition-colors",
@@ -42,7 +45,7 @@ export function WeightSelector({
             )}
           >
             {option}
-            <span className="ml-0.5 text-xs font-medium opacity-75">kg</span>
+            <span className="ml-0.5 text-xs font-medium opacity-75">{unitLabel}</span>
           </button>
         );
       })}

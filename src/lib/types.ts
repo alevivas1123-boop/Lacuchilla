@@ -1,49 +1,42 @@
-export type ProductCategory = "quesos" | "dulces" | "otros";
+import type { ProductRow } from "@/db/schema";
 
-/** Cómo se vende el producto: por kilo o por unidad. */
-export type SaleUnit = "kg" | "unit";
+export type ProductCategory = ProductRow["category"];
+export type SaleType = ProductRow["saleType"];
 
-export interface Product {
-  /** Slug único. También es el nombre del archivo de imagen: /products/<slug>.webp */
-  slug: string;
-  name: string;
-  category: ProductCategory;
-  saleUnit: SaleUnit;
-  /** Precio en pesos uruguayos, por kilo o por unidad según `saleUnit`. */
-  price: number;
-  /** Cómo se presenta el producto. Ej: "Venta por kilo", "Frasco de 380 g". */
-  presentation: string;
-  /** Ruta de la foto dentro de /public. Ej: "/products/queso-colonia.webp". */
-  image: string;
-  /** Texto alternativo descriptivo de la foto. */
-  alt: string;
-  /**
-   * Cómo encaja la foto en el recuadro 4:3 de la tarjeta.
-   * "cover" (por defecto) llena el recuadro; "contain" muestra la foto
-   * entera sobre fondo crema, para las que quedarían mal recortadas.
-   */
-  imageFit?: "cover" | "contain";
-  description: string;
-  /** Opciones del selector. En kg: [1,2,3,4,5]. En unidad: no aplica. */
-  weightOptions?: number[];
-  /** Se completa en el servidor: true si existe la foto real en /public/products. */
-  hasImage?: boolean;
-  /** Se completa en el servidor: true si la foto todavía es material provisorio. */
-  esProvisoria?: boolean;
-}
+/** Producto tal como lo consume la tienda pública. Sin datos administrativos. */
+export type Producto = Omit<
+  ProductRow,
+  "createdAt" | "updatedAt" | "imageBlobPath" | "description"
+> & {
+  description: string | null;
+};
+
+/** Producto completo, para el panel de administración. */
+export type ProductoAdmin = ProductRow;
 
 export interface CartItem {
-  /** Clave estable de la línea del carrito (por ahora, el slug). */
+  /** Clave de la línea del carrito: el slug del producto. */
   id: string;
   slug: string;
   name: string;
   category: ProductCategory;
-  saleUnit: SaleUnit;
+  saleType: SaleType;
+  unitLabel: string;
   presentation: string;
-  /** Precio por kilo o por unidad. */
+  /** Precio por kilo o por unidad, en pesos enteros. */
   unitPrice: number;
-  /** Kilos (si saleUnit === "kg") o unidades (si saleUnit === "unit"). */
+  /** Kilos (saleType "weight") o unidades (saleType "unit"). */
   quantity: number;
+  /**
+   * Configuración de cantidades vigente al agregar el producto. Viaja con la
+   * línea para que el selector funcione sin volver a consultar la base, y se
+   * revalida contra el producto actual antes de confirmar el pedido.
+   */
+  minQuantity?: number;
+  maxQuantity?: number;
+  quantityStep?: number;
+  /** Foto vigente al agregar el producto, para la miniatura del carrito. */
+  imageUrl?: string | null;
 }
 
 export interface OrderCustomer {
@@ -61,6 +54,59 @@ export interface Order {
   orderNumber: string;
   createdAt: string;
   items: CartItem[];
+  /** Total del pedido, en pesos enteros. */
   total: number;
   customer: OrderCustomer;
+}
+
+/** Convierte una fila de la base en el producto que consume la tienda. */
+export function aProductoPublico(fila: ProductRow): Producto {
+  return {
+    id: fila.id,
+    slug: fila.slug,
+    name: fila.name,
+    description: fila.description,
+    category: fila.category,
+    price: fila.price,
+    currency: fila.currency,
+    saleType: fila.saleType,
+    unitLabel: fila.unitLabel,
+    minQuantity: fila.minQuantity,
+    maxQuantity: fila.maxQuantity,
+    quantityStep: fila.quantityStep,
+    presentation: fila.presentation,
+    imageUrl: fila.imageUrl,
+    imageAlt: fila.imageAlt,
+    active: fila.active,
+    sortOrder: fila.sortOrder,
+  };
+}
+
+/** Opciones del selector de cantidad, derivadas de la configuración del producto. */
+export function opcionesDeCantidad(producto: {
+  minQuantity: number;
+  maxQuantity: number;
+  quantityStep: number;
+}): number[] {
+  const { minQuantity, maxQuantity, quantityStep } = producto;
+  if (quantityStep <= 0 || maxQuantity < minQuantity) return [minQuantity];
+  const opciones: number[] = [];
+  // Tope defensivo: una configuración rara no puede generar una lista infinita.
+  for (let valor = minQuantity; valor <= maxQuantity && opciones.length < 100; valor += quantityStep) {
+    opciones.push(valor);
+  }
+  return opciones.length > 0 ? opciones : [minQuantity];
+}
+
+/** Ajusta una cantidad al rango y al incremento del producto. */
+export function ajustarCantidad(
+  cantidad: number,
+  producto: { minQuantity: number; maxQuantity: number; quantityStep: number },
+): number {
+  const { minQuantity, maxQuantity, quantityStep } = producto;
+  if (!Number.isFinite(cantidad)) return minQuantity;
+  const acotada = Math.min(maxQuantity, Math.max(minQuantity, Math.round(cantidad)));
+  if (quantityStep <= 1) return acotada;
+  const pasos = Math.round((acotada - minQuantity) / quantityStep);
+  return Math.min(maxQuantity, minQuantity + pasos * quantityStep);
 }
