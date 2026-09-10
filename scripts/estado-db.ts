@@ -19,21 +19,19 @@ import path from "node:path";
 
 import postgres from "postgres";
 
+import { contar, revisarMigraciones, type MigracionDelRepo } from "../src/lib/migraciones";
+
 const raiz = process.cwd();
 
-interface Migracion {
-  tag: string;
-  hash: string;
-}
-
-/** Las migraciones del repositorio, con el hash con que las registra Drizzle. */
-function migracionesDelRepo(): Migracion[] {
+/** Las migraciones del repositorio, con el hash y la marca que usa Drizzle. */
+function migracionesDelRepo(): MigracionDelRepo[] {
   const diario = JSON.parse(
     fs.readFileSync(path.join(raiz, "drizzle", "meta", "_journal.json"), "utf8"),
-  ) as { entries: { tag: string }[] };
+  ) as { entries: { tag: string; when: number }[] };
 
-  return diario.entries.map(({ tag }) => ({
+  return diario.entries.map(({ tag, when }) => ({
     tag,
+    cuando: when,
     hash: createHash("sha256")
       .update(fs.readFileSync(path.join(raiz, "drizzle", `${tag}.sql`), "utf8"))
       .digest("hex"),
@@ -63,14 +61,15 @@ async function main() {
           select hash, created_at from "drizzle"."__drizzle_migrations"
         `
       : [];
-    const hashesAplicados = new Set(aplicadas.map((f) => f.hash));
+    const revisadas = revisarMigraciones(delRepo, aplicadas);
+    const { pendientes, conOtroContenido } = contar(revisadas);
 
     console.log("MIGRACIONES");
-    let pendientes = 0;
-    for (const migracion of delRepo) {
-      const puesta = hashesAplicados.has(migracion.hash);
-      if (!puesta) pendientes += 1;
-      console.log(`  ${puesta ? "✓" : "✗"} ${migracion.tag}${puesta ? "" : "   ← PENDIENTE"}`);
+    for (const { tag, estado } of revisadas) {
+      if (estado === "aplicada") console.log(`  ✓ ${tag}`);
+      else if (estado === "aplicada-con-otro-contenido")
+        console.log(`  ✓ ${tag}   (el archivo cambió desde que se aplicó)`);
+      else console.log(`  ✗ ${tag}   ← PENDIENTE`);
     }
 
     console.log(
@@ -78,6 +77,15 @@ async function main() {
         ? "  La base está al día.\n"
         : `\n  Falta aplicar ${pendientes}. Corré la tarea "migrar".\n`,
     );
+
+    if (conOtroContenido > 0) {
+      console.log(
+        `  Nota: ${conOtroContenido} ${conOtroContenido === 1 ? "migración quedó registrada" : "migraciones quedaron registradas"} ` +
+          "con un contenido distinto al del repositorio.\n" +
+          "  Drizzle no las va a volver a aplicar. No hay nada que hacer,\n" +
+          "  pero si alguien recreara la base desde cero podría no quedar igual.\n",
+      );
+    }
 
     if (pendientes > 0) {
       // Sin las tablas nuevas, todo lo de abajo fallaría con un error feo que
