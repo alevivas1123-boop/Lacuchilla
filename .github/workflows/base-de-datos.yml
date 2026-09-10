@@ -1,0 +1,97 @@
+# Tareas contra la base de datos de producción.
+#
+# Existe por una razón concreta: ni el navegador ni el asistente llegan a Neon,
+# pero un runner de GitHub sí. Este archivo es el único lugar desde donde se
+# tocan las tablas de producción, y deja registro de cada corrida.
+#
+# Se usa de dos formas:
+#
+#   - A mano, desde la pestaña Actions (funciona desde el celular): elegís la
+#     tarea y le das "Run workflow".
+#   - Solo, cuando entra a main un cambio en drizzle/: aplica las migraciones
+#     pendientes sin que nadie tenga que acordarse.
+#
+# Necesita un único secreto: DATABASE_URL (Settings → Secrets and variables →
+# Actions). Nunca se imprime.
+
+name: Base de datos
+
+on:
+  workflow_dispatch:
+    inputs:
+      tarea:
+        description: "Qué hacer"
+        required: true
+        default: estado
+        type: choice
+        options:
+          - estado
+          - migrar
+          - migrar-y-sembrar
+
+  push:
+    branches: [main]
+    paths:
+      - "drizzle/**"
+      - "src/db/schema.ts"
+
+# Dos corridas a la vez sobre la misma base es la forma más fácil de dejarla
+# a medias. Se encolan, y no se cancela una que ya empezó a escribir.
+concurrency:
+  group: base-de-datos
+  cancel-in-progress: false
+
+jobs:
+  tarea:
+    name: ${{ inputs.tarea || 'migrar (automático)' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Comprobar que el secreto está cargado
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::Falta el secreto DATABASE_URL." \
+                 "Cargalo en Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          echo "El secreto está cargado."
+
+      # Siempre antes de tocar nada: qué hay y qué falta. Si algo sale mal
+      # después, queda en el registro cómo estaba la base antes.
+      - name: Estado antes
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:estado
+
+      - name: Aplicar migraciones
+        if: inputs.tarea != 'estado'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:migrate
+
+      # El seed no pisa nada: los productos se saltean por slug y los puntos
+      # solo se cargan si no hay ninguno.
+      - name: Sembrar catálogo y puntos
+        if: inputs.tarea == 'migrar-y-sembrar'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:seed
+
+      - name: Estado después
+        if: inputs.tarea != 'estado'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:estado

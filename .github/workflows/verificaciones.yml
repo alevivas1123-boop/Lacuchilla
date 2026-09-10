@@ -1,0 +1,44 @@
+# Pruebas, lint y build en cada pull request.
+#
+# El sentido es concreto: los merges se hacen desde el celular, mirando un
+# título y poco más. Esto revisa antes de que llegue a producción, así el
+# botón verde significa algo.
+
+name: Verificaciones
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Un push nuevo al mismo PR deja obsoleta la corrida anterior.
+concurrency:
+  group: verificaciones-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      # Las pruebas levantan PostgreSQL de verdad en proceso (PGlite): no hace
+      # falta ningún servicio ni secreto para correrlas.
+      - name: Pruebas
+        run: npm test
+
+      - name: Build
+        run: npm run build

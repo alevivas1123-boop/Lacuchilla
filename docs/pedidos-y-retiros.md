@@ -165,17 +165,17 @@ RESTRICT`: un pedido no puede quedar apuntando a la nada. `order_items` sí es
 
 ## Poner al día una base existente
 
-Con una terminal y `DATABASE_URL` apuntando a la base:
+Desde **Actions → Base de datos → Run workflow**, tarea `migrar-y-sembrar`.
+Funciona desde el celular y no hace falta terminal. El detalle, en
+[`base-de-datos.md`](./base-de-datos.md).
+
+Con una terminal, es lo mismo:
 
 ```bash
+npm run db:estado    # qué falta, sin tocar nada
 npm run db:migrate   # crea las tablas nuevas
 npm run db:seed      # carga catálogo y puntos si faltan; no pisa nada
 ```
-
-Sin terminal, desde el editor SQL de Neon: pegar y ejecutar
-[`drizzle/setup-completo.sql`](../drizzle/setup-completo.sql). Aplica solo las
-migraciones que falten y no duplica ni pisa nada, así que se puede ejecutar más
-de una vez sin miedo.
 
 Después del deploy, en el panel:
 
