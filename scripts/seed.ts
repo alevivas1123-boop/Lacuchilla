@@ -12,7 +12,7 @@ import postgres from "postgres";
 
 import type { BaseDeDatos } from "../src/db/client";
 import * as schema from "../src/db/schema";
-import { sembrarCatalogo, sembrarPuntos } from "../src/db/seed";
+import { sembrarCatalogo, sembrarConfiguracion, sembrarPuntos } from "../src/db/seed";
 
 async function main() {
   const url = process.env.DATABASE_URL;
@@ -35,6 +35,13 @@ async function main() {
       puntos.insertados > 0
         ? `Puntos de retiro: ${puntos.insertados} creados.`
         : `Puntos de retiro: ya había ${puntos.total}, no se tocó ninguno.`,
+    );
+
+    const configuracion = await sembrarConfiguracion(db);
+    console.log(
+      configuracion.sembrada
+        ? "Configuración: datos bancarios DE EJEMPLO cargados. Reemplazalos en /admin/configuracion."
+        : "Configuración: ya había datos bancarios, no se tocaron.",
     );
   } finally {
     await conexion.end({ timeout: 5 });

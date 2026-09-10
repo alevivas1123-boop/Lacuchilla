@@ -16,7 +16,7 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-import { filasDelSeed, PUNTOS_INICIALES } from "../src/db/seed";
+import { CONFIGURACION_INICIAL, filasDelSeed, PUNTOS_INICIALES } from "../src/db/seed";
 
 const raiz = process.cwd();
 const diario = JSON.parse(
@@ -69,6 +69,8 @@ const puntos = PUNTOS_INICIALES.map(
     `${p.cutoffHours}, ${cita(p.instructions as string)}, true, ${p.sortOrder})`,
 ).join(",\n");
 
+const c = CONFIGURACION_INICIAL;
+
 process.stdout.write(`-- ═══════════════════════════════════════════════════════════════════════
 -- La Cuchilla · preparación de la base de datos
 --
@@ -116,12 +118,24 @@ ${puntos}
 ) AS nuevos
 WHERE NOT EXISTS (SELECT 1 FROM "pickup_points");
 
+-- 5. Datos bancarios de ejemplo ----------------------------------------
+-- Deliberadamente falsos: la confirmación del pedido los muestra en pantalla,
+-- y una cuenta con pinta de real invita a transferir a un número que no existe.
+-- Se reemplazan en /admin/configuracion. Solo se cargan si no hay nada.
+INSERT INTO "store_settings"
+  (id, bank_holder, bank_name, bank_account_type, bank_account, bank_document, bank_instructions)
+VALUES
+  (1, ${cita(c.bankHolder)}, ${cita(c.bankName)}, ${cita(c.bankAccountType)},
+   ${cita(c.bankAccount)}, ${cita(c.bankDocument)}, ${cita(c.bankInstructions)})
+ON CONFLICT (id) DO NOTHING;
+
 COMMIT;
 
--- 5. Comprobación -------------------------------------------------------
+-- 6. Comprobación -------------------------------------------------------
 SELECT
   (SELECT count(*) FROM products) AS productos,
   (SELECT count(*) FROM products WHERE active) AS productos_activos,
   (SELECT count(*) FROM pickup_points WHERE active) AS puntos_activos,
-  (SELECT count(*) FROM orders) AS pedidos;
+  (SELECT count(*) FROM orders) AS pedidos,
+  (SELECT bank_holder FROM store_settings WHERE id = 1) AS titular_bancario;
 `);

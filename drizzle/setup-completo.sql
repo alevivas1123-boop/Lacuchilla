@@ -213,11 +213,23 @@ SELECT * FROM (VALUES
 ) AS nuevos
 WHERE NOT EXISTS (SELECT 1 FROM "pickup_points");
 
+-- 5. Datos bancarios de ejemplo ----------------------------------------
+-- Deliberadamente falsos: la confirmación del pedido los muestra en pantalla,
+-- y una cuenta con pinta de real invita a transferir a un número que no existe.
+-- Se reemplazan en /admin/configuracion. Solo se cargan si no hay nada.
+INSERT INTO "store_settings"
+  (id, bank_holder, bank_name, bank_account_type, bank_account, bank_document, bank_instructions)
+VALUES
+  (1, 'La Cuchilla (datos de ejemplo)', 'BROU', 'Caja de ahorro en pesos',
+   '000000000-00000', '000000000-0', '⚠️ Estos datos son de ejemplo y todavía no sirven para transferir. Escribinos por WhatsApp antes de pagar.')
+ON CONFLICT (id) DO NOTHING;
+
 COMMIT;
 
--- 5. Comprobación -------------------------------------------------------
+-- 6. Comprobación -------------------------------------------------------
 SELECT
   (SELECT count(*) FROM products) AS productos,
   (SELECT count(*) FROM products WHERE active) AS productos_activos,
   (SELECT count(*) FROM pickup_points WHERE active) AS puntos_activos,
-  (SELECT count(*) FROM orders) AS pedidos;
+  (SELECT count(*) FROM orders) AS pedidos,
+  (SELECT bank_holder FROM store_settings WHERE id = 1) AS titular_bancario;
