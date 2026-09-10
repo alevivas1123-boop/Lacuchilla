@@ -4,7 +4,8 @@ import { updateTag } from "next/cache";
 import { headers } from "next/headers";
 
 import { listarProductosPublicos } from "@/db/queries";
-import { crearPedido, listarPuntosActivos, type LineaNueva } from "@/db/queries-pedidos";
+import { crearPedido, listarPuntosActivos, obtenerPedido, type LineaNueva } from "@/db/queries-pedidos";
+import { enviarConfirmacionDePedido } from "@/lib/email/confirmacion-de-pedido";
 import { checkoutSchema } from "@/lib/checkout-schema";
 import { registrarFallo, revisarIntentos } from "@/lib/rate-limit";
 import { fechaDeRetiroValida } from "@/lib/retiros";
@@ -212,6 +213,19 @@ export async function crearPedidoDesdeElCheckout(
         total,
         lineas,
       });
+      // La confirmación por correo va después de que el pedido está guardado, y
+      // su resultado no cambia el de la compra: si el correo falla, el pedido
+      // ya existe y el cliente igual ve los datos bancarios en pantalla.
+      try {
+        const guardado = await obtenerPedido(pedido.id);
+        if (guardado) await enviarConfirmacionDePedido(guardado.pedido, guardado.lineas);
+      } catch (error) {
+        console.error(
+          `El pedido ${pedido.orderNumber} se guardó, pero falló la confirmación por correo:`,
+          error instanceof Error ? error.message : error,
+        );
+      }
+
       return { ok: true, id: pedido.id, orderNumber: pedido.orderNumber };
     } catch (error) {
       if (esNumeroRepetido(error) && intento < 4) continue;

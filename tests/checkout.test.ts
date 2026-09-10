@@ -37,6 +37,15 @@ vi.mock("next/cache", async (original) => ({
   updateTag: (etiqueta: string) => etiquetasExpiradas.push(etiqueta),
 }));
 
+const correo = { falla: false, enviados: [] as string[] };
+vi.mock("@/lib/email/confirmacion-de-pedido", () => ({
+  enviarConfirmacionDePedido: async (pedido: { orderNumber: string }) => {
+    if (correo.falla) throw new Error("el proveedor de correo está caído");
+    correo.enviados.push(pedido.orderNumber);
+    return { enviado: true, proveedor: "prueba" };
+  },
+}));
+
 const { crearPedidoDesdeElCheckout } = await import("@/app/(tienda)/checkout/crear-pedido");
 
 /** Un jueves de 2026, lejos del reloj real de la prueba. */
@@ -93,6 +102,8 @@ beforeEach(async () => {
   await sembrarCatalogo(db);
   punto = await crearPunto(CARRASCO, db);
   reiniciarLimites();
+  correo.falla = false;
+  correo.enviados = [];
   // El corte es de 24 h: se congela el reloj bastante antes del jueves.
   vi.setSystemTime(new Date("2026-09-14T12:00:00Z"));
 });
@@ -147,6 +158,39 @@ describe("crear el pedido", () => {
     expect(uno.pedido.customerPhone).toBe("59899123456");
     // Los dos teléfonos escritos distinto son la misma persona.
     expect(dos.pedido.customerId).toBe(uno.pedido.customerId);
+  });
+});
+
+describe("la confirmación por correo", () => {
+  it("se manda cuando el pedido se guardó bien", async () => {
+    const item = await itemDelCarrito("queso-colonia", 1);
+    const resultado = await crearPedidoDesdeElCheckout(
+      formulario({ email: "ana@ejemplo.com" }),
+      [item],
+    );
+    expect(resultado.ok).toBe(true);
+    if (!resultado.ok) return;
+    expect(correo.enviados).toEqual([resultado.orderNumber]);
+  });
+
+  it("un correo caído NO hace fallar la compra", async () => {
+    // El pedido ya está guardado cuando se intenta mandar el correo. Que no
+    // salga es una molestia; hacer fallar una compra por eso sería perder
+    // plata, y el cliente igual ve los datos bancarios en pantalla.
+    correo.falla = true;
+    const item = await itemDelCarrito("queso-colonia", 1);
+    const resultado = await crearPedidoDesdeElCheckout(
+      formulario({ email: "ana@ejemplo.com" }),
+      [item],
+    );
+
+    expect(resultado.ok, JSON.stringify(resultado)).toBe(true);
+    // Y el pedido quedó de verdad en la base, no a medias.
+    expect(await listarPedidos({}, db)).toHaveLength(1);
+    if (!resultado.ok) return;
+    const guardado = await obtenerPedido(resultado.id, db);
+    expect(guardado?.pedido.status).toBe("pendiente_pago");
+    expect(guardado?.lineas).toHaveLength(1);
   });
 });
 

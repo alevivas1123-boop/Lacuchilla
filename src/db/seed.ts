@@ -1,7 +1,13 @@
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 import type { BaseDeDatos } from "@/db/client";
-import { pickupPoints, products, type NewPickupPointRow, type NewProductRow } from "@/db/schema";
+import {
+  pickupPoints,
+  products,
+  storeSettings,
+  type NewPickupPointRow,
+  type NewProductRow,
+} from "@/db/schema";
 import { PRODUCTOS_INICIALES } from "@/data/seed-products";
 
 /**
@@ -135,4 +141,51 @@ export async function sembrarPuntos(db: BaseDeDatos): Promise<ResultadoPuntos> {
     .returning({ id: pickupPoints.id });
 
   return { insertados: insertados.length, total: insertados.length };
+}
+
+/**
+ * Datos bancarios de arranque.
+ *
+ * **Son deliberadamente falsos y se nota.** La confirmación del pedido los
+ * muestra en pantalla, y el sitio está publicado: una cuenta con pinta de real
+ * invita a que alguien transfiera a un número que no existe. Con ceros y el
+ * aviso, quien los vea entiende que todavía no puede pagar.
+ *
+ * Sirven para que el bloque de transferencia se vea y se pueda revisar. El
+ * dueño los reemplaza por los reales en /admin/configuracion.
+ */
+export const CONFIGURACION_INICIAL = {
+  bankHolder: "La Cuchilla (datos de ejemplo)",
+  bankName: "BROU",
+  bankAccountType: "Caja de ahorro en pesos",
+  bankAccount: "000000000-00000",
+  bankDocument: "000000000-0",
+  bankInstructions:
+    "⚠️ Estos datos son de ejemplo y todavía no sirven para transferir. " +
+    "Escribinos por WhatsApp antes de pagar.",
+};
+
+/**
+ * Siembra la configuración solo si nadie la cargó todavía.
+ *
+ * Si ya hay un titular escrito, no se toca: sería pisar los datos reales del
+ * negocio con los de ejemplo, que es la peor forma de romper el cobro.
+ */
+export async function sembrarConfiguracion(
+  db: BaseDeDatos,
+): Promise<{ sembrada: boolean }> {
+  const [fila] = await db
+    .select({ bankHolder: storeSettings.bankHolder })
+    .from(storeSettings)
+    .where(eq(storeSettings.id, 1))
+    .limit(1);
+
+  if (fila?.bankHolder?.trim()) return { sembrada: false };
+
+  await db
+    .insert(storeSettings)
+    .values({ id: 1, ...CONFIGURACION_INICIAL })
+    .onConflictDoUpdate({ target: storeSettings.id, set: CONFIGURACION_INICIAL });
+
+  return { sembrada: true };
 }
