@@ -42,10 +42,6 @@ export function OrderSummary({
       </ul>
 
       <div className="mt-1 space-y-2 border-t border-ink/10 pt-4">
-        <p className="flex items-center justify-between gap-3 text-sm">
-          <span className="text-bark">Envío</span>
-          <span className="text-ink/80">A coordinar</span>
-        </p>
         <p className="flex items-baseline justify-between gap-3">
           <span className="font-medium text-bark">Total</span>
           <span className="font-display text-2xl font-semibold text-ink tabular-nums">

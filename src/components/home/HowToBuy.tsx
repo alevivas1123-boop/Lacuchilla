@@ -7,14 +7,14 @@ const steps = [
       "Recorré el catálogo, seleccioná los kilos o las unidades y sumá todo al carrito.",
   },
   {
-    title: "Completá tus datos",
+    title: "Elegí dónde y cuándo retirarlo",
     description:
-      "Nombre, teléfono y si preferís envío o retiro. No hace falta crear ninguna cuenta.",
+      "Nuestros puntos de retiro con su día y horario. Solo tu nombre y un teléfono: no hace falta crear una cuenta.",
   },
   {
-    title: "Coordinamos el pago y la entrega",
+    title: "Transferí y pasá a buscarlo",
     description:
-      "Te escribimos para confirmar el pedido, pasarte los datos de la transferencia y acordar la entrega.",
+      "Al confirmar te mostramos los datos bancarios. Cuando vemos la transferencia dejamos tu pedido pronto para ese día.",
   },
 ];
 

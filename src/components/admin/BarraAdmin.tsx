@@ -2,13 +2,14 @@ import Link from "next/link";
 import { LogOut, Store } from "lucide-react";
 
 import { accionCerrarSesion } from "@/app/admin/actions";
+import { NavAdmin } from "@/components/admin/NavAdmin";
 import { Logo } from "@/components/ui/Logo";
 
 /** Cabecera del panel: identidad, vuelta a la tienda y cierre de sesión. */
 export function BarraAdmin() {
   return (
-    <header className="border-b border-ink/10 bg-card">
-      <div className="container-page flex h-16 items-center justify-between gap-4 sm:h-18">
+    <header className="bg-card">
+      <div className="container-page flex h-16 items-center justify-between gap-4 border-b border-ink/10 sm:h-18">
         <Logo size={40} withWordmark asLink={false} />
 
         <div className="flex items-center gap-1 sm:gap-2">
@@ -31,6 +32,8 @@ export function BarraAdmin() {
           </form>
         </div>
       </div>
+
+      <NavAdmin />
     </header>
   );
 }

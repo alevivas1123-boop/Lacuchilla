@@ -11,6 +11,7 @@
     "verificar:imagenes": "node scripts/verificar-imagenes.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
+    "db:estado": "tsx scripts/estado-db.ts",
     "db:seed": "tsx scripts/seed.ts",
     "test": "vitest run",
     "db:local": "node scripts/db-local.mjs",
