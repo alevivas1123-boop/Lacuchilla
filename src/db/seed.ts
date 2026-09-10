@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 
 import type { BaseDeDatos } from "@/db/client";
-import { products, type NewProductRow } from "@/db/schema";
+import { pickupPoints, products, type NewPickupPointRow, type NewProductRow } from "@/db/schema";
 import { PRODUCTOS_INICIALES } from "@/data/seed-products";
 
 /**
@@ -60,4 +60,79 @@ export async function sembrarCatalogo(db: BaseDeDatos): Promise<ResultadoSeed> {
     existentes: filas.length - insertadas.length,
     total: Number(conteo?.total ?? 0),
   };
+}
+
+/**
+ * Los dos puntos de retiro con los que arranca la operación.
+ *
+ * Cuchilla Alta atiende el fin de semana, y eso son dos filas y no una: cada
+ * día puede tener su horario, y la fecha del pedido tiene que poder ser el
+ * sábado o el domingo, no "el fin de semana".
+ *
+ * El dueño los edita desde el panel; esto es solo el punto de partida para que
+ * la tienda pueda vender el primer día.
+ */
+export const PUNTOS_INICIALES: NewPickupPointRow[] = [
+  {
+    name: "Carrasco",
+    address: "Coordinamos el punto exacto por WhatsApp",
+    weekday: 4, // jueves
+    timeFrom: "17:00",
+    timeTo: "19:00",
+    cutoffHours: 24,
+    instructions: "Te escribimos el mismo jueves para confirmar la esquina exacta.",
+    active: true,
+    sortOrder: 10,
+  },
+  {
+    name: "Cuchilla Alta",
+    address: "En el tambo, Cuchilla Alta",
+    weekday: 6, // sábado
+    timeFrom: "10:00",
+    timeTo: "13:00",
+    cutoffHours: 24,
+    instructions: null,
+    active: true,
+    sortOrder: 20,
+  },
+  {
+    name: "Cuchilla Alta",
+    address: "En el tambo, Cuchilla Alta",
+    weekday: 0, // domingo
+    timeFrom: "10:00",
+    timeTo: "13:00",
+    cutoffHours: 24,
+    instructions: null,
+    active: true,
+    sortOrder: 21,
+  },
+];
+
+export interface ResultadoPuntos {
+  insertados: number;
+  total: number;
+}
+
+/**
+ * Siembra los puntos de retiro.
+ *
+ * No hay clave natural para hacerlo idempotente por fila (dos puntos pueden
+ * llamarse igual en días distintos), así que la regla es más simple y más
+ * segura: si ya hay algún punto cargado, no se toca nada. El seed sirve para
+ * arrancar, no para restaurar.
+ */
+export async function sembrarPuntos(db: BaseDeDatos): Promise<ResultadoPuntos> {
+  const [conteo] = await db
+    .select({ total: sql<number>`count(*)::int` })
+    .from(pickupPoints);
+  const existentes = Number(conteo?.total ?? 0);
+
+  if (existentes > 0) return { insertados: 0, total: existentes };
+
+  const insertados = await db
+    .insert(pickupPoints)
+    .values(PUNTOS_INICIALES)
+    .returning({ id: pickupPoints.id });
+
+  return { insertados: insertados.length, total: insertados.length };
 }

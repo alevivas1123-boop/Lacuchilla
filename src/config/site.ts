@@ -41,9 +41,9 @@ export const siteConfig = {
     ],
   },
 
-  /** Mensaje único sobre cómo se cobra el pedido en esta etapa. */
+  /** Mensaje único sobre cómo se cobra el pedido. */
   paymentNotice:
-    "El pago se coordinará mediante transferencia bancaria una vez confirmado el pedido.",
+    "Se paga por transferencia bancaria. Al confirmar el pedido te mostramos los datos para transferir.",
 };
 
 export function whatsappLink(message?: string) {

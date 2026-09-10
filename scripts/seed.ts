@@ -12,7 +12,7 @@ import postgres from "postgres";
 
 import type { BaseDeDatos } from "../src/db/client";
 import * as schema from "../src/db/schema";
-import { sembrarCatalogo } from "../src/db/seed";
+import { sembrarCatalogo, sembrarPuntos } from "../src/db/seed";
 
 async function main() {
   const url = process.env.DATABASE_URL;
@@ -26,8 +26,15 @@ async function main() {
     const db = drizzle(conexion, { schema }) as unknown as BaseDeDatos;
     const resultado = await sembrarCatalogo(db);
     console.log(
-      `Seed listo: ${resultado.insertados} insertados, ` +
+      `Catálogo: ${resultado.insertados} insertados, ` +
         `${resultado.existentes} ya existían. Total en la base: ${resultado.total}.`,
+    );
+
+    const puntos = await sembrarPuntos(db);
+    console.log(
+      puntos.insertados > 0
+        ? `Puntos de retiro: ${puntos.insertados} creados.`
+        : `Puntos de retiro: ya había ${puntos.total}, no se tocó ninguno.`,
     );
   } finally {
     await conexion.end({ timeout: 5 });

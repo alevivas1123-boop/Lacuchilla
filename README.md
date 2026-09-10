@@ -18,11 +18,13 @@ catálogo, carrito y checkout sin registro.
 
 > **Qué hace y qué no hace todavía**
 >
-> El pedido se confirma en la web y se muestra un número de pedido, pero
-> **no se envía a ningún servidor**: no hay pago online, ni Mercado Pago, ni
-> base de datos, ni panel administrativo, ni cuentas de usuario. El pedido se
-> coordina después por WhatsApp y se cobra por transferencia bancaria. Es
-> exactamente el flujo que hoy usa el negocio, puesto en una web.
+> El pedido se guarda en la base, el cliente elige dónde y qué día lo retira, y
+> en la confirmación ve los datos para transferir. El dueño confirma el pago a
+> mano desde el panel cuando ve la plata en el banco.
+>
+> **No** hay pago online (ni Mercado Pago), ni cuentas de cliente, ni avisos
+> automáticos: los estados del pedido son internos y el cliente no recibe
+> ninguna notificación. Es el flujo que hoy usa el negocio, puesto en una web.
 
 ## Qué incluye
 
@@ -36,10 +38,15 @@ catálogo, carrito y checkout sin registro.
   actualizándose en vivo.
 - **Carrito lateral** siempre accesible desde el header, con badge de
   cantidad, y **página `/carrito`** completa.
-- **Checkout sin registro** (`/checkout`) validado con Zod + React Hook Form,
-  con dirección obligatoria solo si el cliente elige envío.
-- **Confirmación** (`/pedido-confirmado`) con número de pedido simulado,
-  resumen, datos del cliente y acceso directo a WhatsApp.
+- **Checkout sin registro** (`/checkout`) validado con Zod + React Hook Form:
+  se elige un punto de retiro y una de sus próximas fechas concretas.
+- **Confirmación** (`/pedido-confirmado`) con el número de pedido, los **datos
+  bancarios para transferir**, dónde y cuándo retirar, y el detalle de lo
+  pedido. El pedido queda guardado en PostgreSQL.
+- **Panel de pedidos** con el botón **Confirmar pago**, pensado para usarse en
+  el celular con el banco abierto al lado, y **hoja de carga por entrega**:
+  cuánto hay que llevar de cada producto y qué bolsa es de quién. Ver
+  [`docs/pedidos-y-retiros.md`](./docs/pedidos-y-retiros.md).
 - Carrito **persistido en `localStorage`**: si el cliente cierra el navegador,
   su pedido sigue ahí.
 
@@ -57,8 +64,9 @@ catálogo, carrito y checkout sin registro.
 | Base de datos | PostgreSQL (Neon) con Drizzle ORM |
 | Imágenes nuevas | Vercel Blob |
 
-Sin pasarelas de pago todavía. El catálogo vive en PostgreSQL y se administra
-desde **[`/admin`](./docs/admin-productos.md)**.
+Sin pasarelas de pago todavía: se cobra por transferencia. El catálogo, los
+pedidos y los puntos de retiro viven en PostgreSQL y se administran desde
+**[`/admin`](./docs/admin-productos.md)**.
 
 ## Puesta en marcha
 
@@ -255,19 +263,13 @@ pastillas a partir de ahí.
 
 La arquitectura está preparada para sumar esto sin rehacer el front:
 
-- **Persistencia real de pedidos**: hoy el pedido se arma en
-  `CheckoutForm.onSubmit` y se guarda en `sessionStorage`. Ahí va el `POST` a
-  una API route y a Supabase/PostgreSQL.
-- **Gestión de productos** desde base de datos: `src/data/products.ts` es la
-  única fuente de verdad y ya devuelve el tipo `Product`; se reemplaza por una
-  consulta sin tocar los componentes.
-- **Gestión de imágenes** (subida desde un panel) en lugar de archivos en
-  `public/products`.
-- **Panel administrativo** y estados de pedido.
-- **Pagos**: transferencia bancaria con comprobante y/o Mercado Pago.
-- **Notificación por WhatsApp** automática al confirmar el pedido.
-- **Zonas y costos de envío** calculados (hoy el envío figura "a coordinar").
-- **Registro opcional de clientes** para repetir pedidos.
+- **Pantalla de clientes** con su historial de pedidos.
+- **Exportar la entrega** para imprimir o mandar por WhatsApp.
+- **Disponibilidad por entrega**, para cuando alguien pida 5 kg que no hay.
+- **Reportes** de ventas por entrega y por producto.
+- **Mercado Pago** (rama aparte, ver
+  [`docs/mercadopago-mvp-plan.md`](./docs/mercadopago-mvp-plan.md)).
+- **Avisos por WhatsApp** al confirmar el pago.
 - Página individual de producto y buscador, si el catálogo crece.
 
 ---

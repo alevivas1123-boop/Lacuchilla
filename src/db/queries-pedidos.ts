@@ -253,6 +253,9 @@ export interface FiltrosPedidos {
   puntoId?: string;
   fecha?: string;
   busqueda?: string;
+  /** Solo pedidos con retiro de esta fecha en adelante. */
+  desde?: string;
+  limite?: number;
 }
 
 export async function listarPedidos(
@@ -265,6 +268,9 @@ export async function listarPedidos(
   }
   if (filtros.puntoId) condiciones.push(eq(orders.pickupPointId, filtros.puntoId));
   if (filtros.fecha) condiciones.push(eq(orders.pickupDate, filtros.fecha));
+  // Por defecto el panel mira hacia adelante: los pedidos viejos no son
+  // trabajo pendiente y con el tiempo serían la mayoría de la lista.
+  if (filtros.desde) condiciones.push(gte(orders.pickupDate, filtros.desde));
   if (filtros.busqueda?.trim()) {
     const texto = filtros.busqueda.trim();
     const telefono = terminoTelefonico(texto);
@@ -280,7 +286,17 @@ export async function listarPedidos(
     .select()
     .from(orders)
     .where(condiciones.length > 0 ? and(...condiciones) : undefined)
-    .orderBy(asc(orders.pickupDate), desc(orders.createdAt));
+    .orderBy(asc(orders.pickupDate), desc(orders.createdAt))
+    .limit(filtros.limite ?? 200);
+}
+
+/** Cuántos pedidos esperan que el dueño verifique la transferencia. */
+export async function contarPendientesDePago(db: BaseDeDatos = getDb()): Promise<number> {
+  const [fila] = await db
+    .select({ total: sql<number>`count(*)::int` })
+    .from(orders)
+    .where(eq(orders.status, "pendiente_pago"));
+  return fila?.total ?? 0;
 }
 
 export async function obtenerPedido(

@@ -1,7 +1,9 @@
 # Plan: pedidos, puntos de retiro y confirmación de pago
 
-Estado: **propuesta, sin implementar**. Este documento define el modelo y el
-alcance antes de escribir código.
+Estado: **Fase 1 implementada**. Este documento es el plan original, que se
+conserva porque explica *por qué* el modelo es así.
+Cómo funciona lo que quedó construido está en
+[`pedidos-y-retiros.md`](./pedidos-y-retiros.md).
 
 ## El problema
 
@@ -232,18 +234,22 @@ Los cambios de estado sí exigen sesión de admin, como el resto del panel.
 
 ## Fases
 
-### Fase 1 — que el pedido exista y se pueda operar
+### Fase 1 — que el pedido exista y se pueda operar ✅
 
-Sin esto no se puede vender el jueves.
+Sin esto no se puede vender el jueves. **Está hecho.**
 
-1. Migración: `pickup_points`, `customers`, `orders`, `order_items`,
+1. ✅ Migración: `pickup_points`, `customers`, `orders`, `order_items`,
    `store_settings`
-2. ABM de puntos de retiro
-3. Configuración de datos bancarios
-4. Checkout nuevo: punto + fecha, y el pedido persiste
-5. Confirmación con datos bancarios y lugar de retiro
-6. Panel de pedidos + **Confirmar pago**
-7. **Hoja de carga por tanda**
+2. ✅ ABM de puntos de retiro
+3. ✅ Configuración de datos bancarios
+4. ✅ Checkout nuevo: punto + fecha, y el pedido persiste
+5. ✅ Confirmación con datos bancarios y lugar de retiro
+6. ✅ Panel de pedidos + **Confirmar pago**
+7. ✅ **Hoja de carga por tanda**
+
+Se adelantaron dos cosas de la Fase 2 porque salían casi gratis con lo
+anterior: los estados `preparado` y `entregado` se tildan desde la hoja de
+carga, y cancelar pide motivo.
 
 ### Fase 2 — que sea cómodo
 

@@ -7,45 +7,39 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
-import { revalidarCarrito } from "@/app/(tienda)/checkout/validar";
+import { crearPedidoDesdeElCheckout } from "@/app/(tienda)/checkout/crear-pedido";
 import { CartSkeleton } from "@/components/cart/CartSkeleton";
 import { EmptyCart } from "@/components/cart/EmptyCart";
 import { Field, inputClass } from "@/components/checkout/Field";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
+import { SelectorDeRetiro } from "@/components/checkout/SelectorDeRetiro";
 import { Button } from "@/components/ui/Button";
 import { checkoutSchema, type CheckoutFormValues } from "@/lib/checkout-schema";
 import { cartTotal, useCartStore } from "@/lib/cart-store";
 import { cn } from "@/lib/cn";
-import { generateOrderNumber, saveLastOrder } from "@/lib/order-storage";
-import type { Order } from "@/lib/types";
+import type { PuntoParaElegir } from "@/lib/retiros";
 
-const fulfillmentOptions = [
-  {
-    value: "envio" as const,
-    title: "Envío a domicilio",
-    description: "Coordinamos día y costo por WhatsApp.",
-  },
-  {
-    value: "retiro" as const,
-    title: "Retiro en el local",
-    description: "Pasás a buscarlo cuando te quede cómodo.",
-  },
-];
-
-export function CheckoutForm() {
+export function CheckoutForm({ puntos }: { puntos: PuntoParaElegir[] }) {
   const router = useRouter();
   const items = useCartStore((state) => state.items);
   const hydrated = useCartStore((state) => state.hydrated);
   const clear = useCartStore((state) => state.clear);
   const replaceAll = useCartStore((state) => state.replaceAll);
   const [avisos, setAvisos] = useState<string[]>([]);
-  const [submitted, setSubmitted] = useState(false);
+  const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
+  const [enviado, setEnviado] = useState(false);
   const total = cartTotal(items);
+
+  // Con un solo punto no hay nada que elegir: viene marcado. Con varios, la
+  // persona decide, porque el día de retiro depende de cuál.
+  const unicoPunto = puntos.length === 1 ? puntos[0] : undefined;
 
   const {
     register,
     handleSubmit,
     control,
+    setValue,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
@@ -54,67 +48,48 @@ export function CheckoutForm() {
       fullName: "",
       phone: "",
       email: "",
-      fulfillment: "envio",
-      address: "",
-      locality: "",
-      preferredTime: "",
+      pickupPointId: unicoPunto?.id ?? "",
+      pickupDate: unicoPunto?.fechas[0] ?? "",
       notes: "",
     },
   });
 
-  const fulfillment = useWatch({ control, name: "fulfillment" });
-  const needsAddress = fulfillment === "envio";
+  // `useWatch` y no `watch()`: el compilador de React no puede memoizar la
+  // función que devuelve `useForm`, y se saltearía todo el componente.
+  const puntoElegido = useWatch({ control, name: "pickupPointId" });
+  const fechaElegida = useWatch({ control, name: "pickupDate" });
 
-  async function onSubmit(values: CheckoutFormValues) {
-    // Antes de confirmar se revalida el carrito contra la base: el precio, el
-    // rango de cantidades o la disponibilidad pudieron cambiar desde que la
-    // persona armó el pedido. No se confía en lo guardado en el navegador.
-    const revision = await revalidarCarrito(items);
+  function elegirPunto(id: string) {
+    setValue("pickupPointId", id, { shouldValidate: true });
+    // Las fechas son de cada punto: la que estaba elegida puede no existir en
+    // el nuevo. Se propone la primera disponible en vez de dejarla en blanco.
+    const punto = puntos.find((candidato) => candidato.id === id);
+    setValue("pickupDate", punto?.fechas[0] ?? "", { shouldValidate: true });
+  }
 
-    if (revision.sinConexion) {
-      setAvisos([
-        "No pudimos confirmar los precios en este momento. Probá de nuevo en unos minutos.",
-      ]);
+  async function alEnviar(valores: CheckoutFormValues) {
+    setErrorGeneral(null);
+    setAvisos([]);
+
+    // El servidor recalcula precios, total, punto y fecha. Lo que se manda de
+    // acá es una propuesta, no un pedido.
+    const resultado = await crearPedidoDesdeElCheckout(valores, items);
+
+    if (resultado.ok) {
+      setEnviado(true);
+      clear();
+      router.push(`/pedido-confirmado?id=${resultado.id}`);
       return;
     }
 
-    if (revision.avisos.length > 0) {
-      // Se actualiza el carrito y se pide confirmar de nuevo, para que nadie
-      // termine comprando a un precio distinto del que vio.
-      replaceAll(revision.items);
-      setAvisos([...revision.avisos, "Revisá el pedido actualizado y confirmá otra vez."]);
-      return;
+    if (resultado.items) replaceAll(resultado.items);
+    if (resultado.avisos?.length) {
+      setAvisos([...resultado.avisos, "Revisá el pedido actualizado y confirmá otra vez."]);
     }
-
-    if (!revision.ok) {
-      setAvisos(["Los productos de tu pedido ya no están disponibles."]);
-      replaceAll([]);
-      return;
+    for (const [campo, mensaje] of Object.entries(resultado.errores ?? {})) {
+      setError(campo as keyof CheckoutFormValues, { message: mensaje });
     }
-
-    const order: Order = {
-      orderNumber: generateOrderNumber(),
-      createdAt: new Date().toISOString(),
-      items: revision.items,
-      total: revision.total,
-      customer: {
-        fullName: values.fullName,
-        phone: values.phone,
-        email: values.email || undefined,
-        fulfillment: values.fulfillment,
-        address: values.fulfillment === "envio" ? values.address : undefined,
-        locality: values.locality || undefined,
-        preferredTime: values.preferredTime || undefined,
-        notes: values.notes || undefined,
-      },
-    };
-
-    // Fase 1: el pedido se guarda solo en el navegador para mostrar la
-    // confirmación. En la fase 2 acá va el POST al backend.
-    setSubmitted(true);
-    saveLastOrder(order);
-    clear();
-    router.push("/pedido-confirmado");
+    if (!resultado.avisos?.length) setErrorGeneral(resultado.mensaje);
   }
 
   if (!hydrated) {
@@ -125,7 +100,7 @@ export function CheckoutForm() {
     );
   }
 
-  if (items.length === 0 && !submitted) {
+  if (items.length === 0 && !enviado) {
     return (
       <div className="rounded-card border border-ink/10 bg-card">
         <EmptyCart />
@@ -135,12 +110,29 @@ export function CheckoutForm() {
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(alEnviar)}
       noValidate
       className="grid gap-8 lg:grid-cols-[1.35fr_1fr] lg:items-start"
     >
       <div className="space-y-6 rounded-card border border-ink/10 bg-card p-5 sm:p-7">
         <fieldset className="space-y-5">
+          <legend className="font-display text-xl font-semibold text-ink">Retiro</legend>
+
+          <input type="hidden" {...register("pickupPointId")} />
+          <input type="hidden" {...register("pickupDate")} />
+
+          <SelectorDeRetiro
+            puntos={puntos}
+            puntoElegido={puntoElegido}
+            fechaElegida={fechaElegida}
+            onElegirPunto={elegirPunto}
+            onElegirFecha={(fecha) => setValue("pickupDate", fecha, { shouldValidate: true })}
+            errorPunto={errors.pickupPointId?.message}
+            errorFecha={errors.pickupDate?.message}
+          />
+        </fieldset>
+
+        <fieldset className="space-y-5 border-t border-ink/10 pt-6">
           <legend className="font-display text-xl font-semibold text-ink">Tus datos</legend>
 
           <Field id="fullName" label="Nombre y apellido" required error={errors.fullName?.message}>
@@ -160,7 +152,7 @@ export function CheckoutForm() {
               id="phone"
               label="Teléfono / WhatsApp"
               required
-              hint="Por acá te escribimos para coordinar."
+              hint="Por si necesitamos coordinar algo del pedido."
               error={errors.phone?.message}
             >
               <input
@@ -190,97 +182,12 @@ export function CheckoutForm() {
               />
             </Field>
           </div>
-        </fieldset>
-
-        <fieldset className="space-y-3 border-t border-ink/10 pt-6">
-          <legend className="font-display text-xl font-semibold text-ink">Entrega</legend>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            {fulfillmentOptions.map((option) => {
-              const selected = fulfillment === option.value;
-              return (
-                <label
-                  key={option.value}
-                  className={cn(
-                    "flex cursor-pointer gap-3 rounded-xl border-2 p-4 transition-colors",
-                    "focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink",
-                    selected
-                      ? "border-ink bg-cream"
-                      : "border-ink/15 bg-cream/60 hover:border-ink/40",
-                  )}
-                >
-                  <input
-                    type="radio"
-                    value={option.value}
-                    className="mt-1 size-4.5 shrink-0 accent-[#4A2E1E]"
-                    {...register("fulfillment")}
-                  />
-                  <span>
-                    <span className="block font-semibold text-ink">{option.title}</span>
-                    <span className="mt-0.5 block text-sm text-bark">{option.description}</span>
-                  </span>
-                </label>
-              );
-            })}
-          </div>
-
-          {needsAddress ? (
-            <Field
-              id="address"
-              label="Dirección"
-              required
-              hint="Calle, número, apartamento y alguna referencia."
-              error={errors.address?.message}
-              className="pt-2"
-            >
-              <input
-                id="address"
-                type="text"
-                autoComplete="street-address"
-                className={inputClass}
-                aria-invalid={Boolean(errors.address)}
-                aria-describedby={cn("address-hint", errors.address && "address-error")}
-                {...register("address")}
-              />
-            </Field>
-          ) : null}
-
-          <div className="grid gap-5 pt-2 sm:grid-cols-2">
-            <Field
-              id="locality"
-              label="Localidad o departamento"
-              required={needsAddress}
-              error={errors.locality?.message}
-            >
-              <input
-                id="locality"
-                type="text"
-                autoComplete="address-level2"
-                placeholder="Montevideo, Canelones…"
-                className={inputClass}
-                aria-invalid={Boolean(errors.locality)}
-                aria-describedby={errors.locality ? "locality-error" : undefined}
-                {...register("locality")}
-              />
-            </Field>
-
-            <Field id="preferredTime" label="Día u horario preferido" error={errors.preferredTime?.message}>
-              <input
-                id="preferredTime"
-                type="text"
-                placeholder="Jueves de tarde, por ejemplo"
-                className={inputClass}
-                {...register("preferredTime")}
-              />
-            </Field>
-          </div>
 
           <Field
             id="notes"
             label="Comentarios sobre el pedido"
             hint="Cortes, presentación, algo para tener en cuenta."
             error={errors.notes?.message}
-            className="pt-2"
           >
             <textarea
               id="notes"
@@ -294,7 +201,7 @@ export function CheckoutForm() {
         </fieldset>
 
         <div className="hidden lg:block">
-          <ConfirmButton isSubmitting={isSubmitting} />
+          <BotonConfirmar enviando={isSubmitting} />
         </div>
       </div>
 
@@ -313,10 +220,19 @@ export function CheckoutForm() {
           </div>
         ) : null}
 
+        {errorGeneral ? (
+          <p
+            role="alert"
+            className="rounded-card border-2 border-[#9B3B1F]/40 bg-[#9B3B1F]/8 p-4 text-sm font-medium leading-relaxed text-ink"
+          >
+            {errorGeneral}
+          </p>
+        ) : null}
+
         <OrderSummary items={items} total={total} />
 
         <div className="lg:hidden">
-          <ConfirmButton isSubmitting={isSubmitting} />
+          <BotonConfirmar enviando={isSubmitting} />
         </div>
 
         <Link
@@ -331,13 +247,14 @@ export function CheckoutForm() {
   );
 }
 
-function ConfirmButton({ isSubmitting }: { isSubmitting: boolean }) {
+function BotonConfirmar({ enviando }: { enviando: boolean }) {
   return (
-    <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-      {isSubmitting ? (
+    // `disabled` mientras se envía: dos clics no pueden crear dos pedidos.
+    <Button type="submit" size="lg" className="w-full" disabled={enviando}>
+      {enviando ? (
         <>
           <Loader2 aria-hidden="true" className="size-4.5 animate-spin" />
-          Enviando…
+          Confirmando…
         </>
       ) : (
         "Confirmar pedido"

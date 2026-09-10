@@ -29,6 +29,19 @@ export interface PatronDeRetiro {
   cutoffHours: number;
 }
 
+/** Un punto de retiro tal como lo ve el cliente, con sus próximas fechas. */
+export interface PuntoParaElegir {
+  id: string;
+  name: string;
+  address: string;
+  weekday: number;
+  timeFrom: string;
+  timeTo: string;
+  instructions: string | null;
+  /** Las próximas fechas concretas que todavía están dentro del corte. */
+  fechas: string[];
+}
+
 /** "2026-09-18" a partir de un instante, en hora uruguaya. */
 export function fechaUruguaya(instante: Date): string {
   const enUy = new Date(instante.getTime() - 3 * 60 * 60 * 1000);

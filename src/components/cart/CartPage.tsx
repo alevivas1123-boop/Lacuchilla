@@ -57,8 +57,8 @@ export function CartPage() {
                 <dd className="font-medium text-ink tabular-nums">{formatPrice(total)}</dd>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <dt className="text-bark">Envío</dt>
-                <dd className="text-right text-ink/80">A coordinar</dd>
+                <dt className="text-bark">Retiro</dt>
+                <dd className="text-right text-ink/80">Elegís el punto al confirmar</dd>
               </div>
             </dl>
 

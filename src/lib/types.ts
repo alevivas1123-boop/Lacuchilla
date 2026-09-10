@@ -39,26 +39,6 @@ export interface CartItem {
   imageUrl?: string | null;
 }
 
-export interface OrderCustomer {
-  fullName: string;
-  phone: string;
-  email?: string;
-  fulfillment: "envio" | "retiro";
-  address?: string;
-  locality?: string;
-  preferredTime?: string;
-  notes?: string;
-}
-
-export interface Order {
-  orderNumber: string;
-  createdAt: string;
-  items: CartItem[];
-  /** Total del pedido, en pesos enteros. */
-  total: number;
-  customer: OrderCustomer;
-}
-
 /** Convierte una fila de la base en el producto que consume la tienda. */
 export function aProductoPublico(fila: ProductRow): Producto {
   return {
